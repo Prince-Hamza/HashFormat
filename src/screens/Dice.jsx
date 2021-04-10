@@ -19,10 +19,13 @@ export default class Dice extends React.Component {
             SearchResults: [],
             Options: [],
             Menu: [{ value: 1, label: "Everyone" }],
-            Description: "",
             currentObject: [],
             KeyWords: [],
-            SeeAlsos: []
+            SeeAlsos: [],
+            Description: "",
+            newKey: '',
+            newSyntax: '',
+            newSA: ''
         }
         this.Data = []
         this.Resp = []
@@ -33,7 +36,6 @@ export default class Dice extends React.Component {
         //  let info = Parser.readTextFile()
 
         let Info = await Fire.Once('/HashFormat/Entries')
-        let infoPlus = 1
 
         Info.forEach((item) => {
             let JSN = item.val()
@@ -86,13 +88,13 @@ export default class Dice extends React.Component {
     }
 
     Save = () => {
-        alert(this.state.currentObject)
+        Fire.Set(`HashFormat/Entries/${this.state.currentObject.Id}`, this.state.currentObject)
     }
 
-    addSyntax = (paramList, State) => {
+    addSyntax = (paramList, State, Value) => {
 
         if (Array.isArray(paramList)) {
-            paramList.push("newItem")
+            paramList.push(Value)
             this.setState({ currentObject: this.state.currentObject })
             this.setState({ [State]: paramList })
 
@@ -116,7 +118,7 @@ export default class Dice extends React.Component {
 
                 <div className="mobiHeader">
                     <div className="Title" style={Styles.Title} >Dice</div>
-                    <button onClick={() => { this.Save() }} className="Button" id="Btn1" style={{ ...Styles.Button }} > Save </button>
+                    <button onClick={() => { this.Save() }} className="Button" id="Btn1" > Save </button>
                     <button className="Button" id="Btn2" style={{ ...Styles.Button }} > Revert </button>
                 </div>
 
@@ -125,26 +127,26 @@ export default class Dice extends React.Component {
                 <div className="mobiEnder" >
                     <div style={Styles.textAreaContainer} >
 
-                        {/* <div> drop down </div> */}
-
-                        {/* <input style={{ width: '46%', marginRight: '2%' }} /> */}
 
                         <Select options={this.state.Menu} className="Select" />
 
 
                         <div style={{ ...Styles.Heading, marginRight: '4.2%' }} >   Level Restrictions  </div>
 
-                        <div style={{ ...Styles.Heading, marginLeft: '0%', marginTop: '2%', marginRight: "0.5%" }} > Syntax Options </div>
+                        <input style={{ ...Styles.Heading, marginLeft: '0%', marginTop: '2%', marginRight: "0.5%" }}
+                            placeholder='New Keyword' onChange={(e) => { this.setState({ newKey: e.target.value }) }} />
 
-                        <img onClick={() => { this.addSyntax(this.state.currentObject.KeyWords, this.state['KeyWords']) }} style={Styles.plusImage} alt="void" width="25px" height="25px"
+                        <img
+                            onClick={() => { this.addSyntax(this.state.currentObject.KeyWords, this.state['KeyWords'], this.state.newKey) }}
+                            style={Styles.plusImage} alt="void" width="25px" height="25px"
                             src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
 
 
                         <input style={{ ...Styles.Heading, width: '40%', marginLeft: '2%', marginTop: '2%' }}
-                            placeholder={"Search"} />
+                            placeholder={"New Syntax"} onChange={(e) => { this.setState({ newSyntax: e.target.value }) }} />
 
 
-                        <img onClick={() => { this.addSyntax(this.state.currentObject.Syntax, this.state['Options']) }} style={Styles.plusImage} alt="void" width="25px" height="25px"
+                        <img onClick={() => { this.addSyntax(this.state.currentObject.Syntax, this.state['Options'], this.state.newSyntax) }} style={Styles.plusImage} alt="void" width="25px" height="25px"
                             src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
 
 
@@ -185,11 +187,15 @@ export default class Dice extends React.Component {
 
 
                 <Container id="SASearch" Top={61.5} Left={33.5} Width={21.5} Height={18} Items={this.state.SeeAlsos} />
+
                 <input style={{ ...Styles.Heading, width: '18%', position: 'absolute', top: "55%", left: '31.5%', marginLeft: '2%' }}
+                    onChange={(e) => { this.setState({ newSA: e.target.value }) }}
                     placeholder={"Search"} />
 
 
-                <img id="Plus" onClick={() => { this.addSyntax(this.state.currentObject.SeeAlso, this.state['SeeAlsos']) }}
+                <img id="Plus"
+                    onClick={() => { this.addSyntax(this.state.currentObject.SeeAlso, this.state['SeeAlsos'], this.state.newSA) }}
+
                     style={{ ...Styles.plusImage, position: 'absolute', left: '53.5%', top: '52%' }}
                     alt="void" width="25px" height="25px"
                     src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
@@ -200,11 +206,6 @@ export default class Dice extends React.Component {
 }
 
 
-const selext = [
-    { value: 'chocolate', label: 'Chocolate' },
-    { value: 'strawberry', label: 'Strawberry' },
-    { value: 'vanilla', label: 'Vanilla' }
-]
 
 let Styles = ({
 
@@ -259,7 +260,10 @@ let Styles = ({
         left: '10%',
         width: '21.5%',
         height: '24%',
-        font: 'italic 16px times new roman'
+        font: 'italic 16px times new roman',
+        display: 'flex',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-Start'
     },
     Heading: {
         backgroundColor: 'whitesmoke',

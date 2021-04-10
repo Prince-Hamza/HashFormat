@@ -76,6 +76,8 @@
     width:19%;
     margin-right: 25px;
     border-radius: 50px;
+    outline:none;
+    cursor: pointer;
   }
 
   #Btn1 {

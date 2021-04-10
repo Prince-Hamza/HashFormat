@@ -7421,7 +7421,7 @@ of time, before being forced to leave the area.
 For "How to bust out of Jail" read HELP JAIL3
 
 
-HELP JAIL, JAIL3, WANTED, LAW
+HELP: JAIL, JAIL3, WANTED, LAW
 
 ~
 
@@ -7475,7 +7475,7 @@ the Jail and Jailcells is restricted to JUSITCE members only.  Attack
 upon those Guards is grounds for immediate prosecution by JUSTICE.
 
 
-HELP JAIL, JAIL2, WANTED, LAW
+HELP: JAIL, JAIL2, WANTED, LAW
 
 ~
 
@@ -7545,7 +7545,7 @@ member.  Only JUSTICE with juridiction over the criminal has power
 
 to affect their fate in our glorious jails.
 
-HELP JAIL, JAIL2, JAIL3, LAW, WANTED
+HELP: JAIL, JAIL2, JAIL3, LAW, WANTED
 
 ~
 

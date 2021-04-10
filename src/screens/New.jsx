@@ -23,8 +23,9 @@ export default class Container extends React.Component {
         //     let info = resp.val()
         //     this.setState({ EntryNum: info.length })
         // })
-        this.scheme()
-      // Parser.readTextFile()
+        //this.scheme()
+      //let i = Parser.getInfo(353)
+      //alert(JSON.stringify(i))
     }
 
     Update = () => {

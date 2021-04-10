@@ -39,7 +39,7 @@ export class Parse {
         let SeeAlso = this.getSeeAlso(Item)
 
         let JSN = ({
-            KeyWords:KeyWords,
+            KeyWords: KeyWords,
             RestrictCode: Restrict,
             Syntax: Syntax,
             Description: Description,
@@ -51,7 +51,7 @@ export class Parse {
     }
 
     getKeyWords = (item) => {
-        let Words = item.substring(item.indexOf('-' ) + 3 , item.indexOf('~'))
+        let Words = item.substring(item.indexOf('-') + 3, item.indexOf('~'))
         let WordsArray = Words.split(" ")
         return WordsArray
     }
@@ -59,19 +59,40 @@ export class Parse {
     getSeeAlso = (item) => {
         let SA = []
         if (item.includes('See also:')) {
-            let Start = item.lastIndexOf('See also:') + 9
-            let snapSA = item.substring(Start, item.length - 1)
-            SA = snapSA.split(',')
-            return SA
-        } else {
+            return this.processSeeAlso(item, 'See also:')
+        } else if (item.includes('see:')) {
+            return this.processSeeAlso(item)
+        }
+
+        else {
             return "undefined"
         }
     }
 
+    processSeeAlso = (item, Starter) => {
+        let Start = item.lastIndexOf(Starter) + 9
+        let flast = item.substring(Start, item.length)
+        let Stop = flast.indexOf('\n')
+        let snapSA = flast.substring(0, Stop)
+        let SA = snapSA.split(',')
+        return SA
+    }
+
     readDescription = (item) => {
-        let PreDesc = item.substring(this.DescStartIndex, item.length - 1)
-        let start = PreDesc.indexOf('\n')
-        let Description = PreDesc.substring(start, PreDesc.length - 1)
+        let PreDesc = item.substring(this.DescStartIndex, item.length - 1);
+        var start = PreDesc.indexOf('\n')
+        if (PreDesc.includes('See also:')) var Stop = PreDesc.indexOf('See also:')
+        if (PreDesc.includes('see:')) var Stop = PreDesc.indexOf('see:')
+        if (!PreDesc.includes('See also:') && !PreDesc.includes('see:')) var Stop = PreDesc.length - 1
+        let Description = PreDesc.substring(start, Stop)
+        Description = this.refineDescription(Description)
+        return Description
+    }
+
+    refineDescription = (Description) => {
+        while (Description.charAt(0) === '\n' || Description.charAt(0) === ' ') {
+            Description = Description.substring(1);
+        }
         return Description
     }
 
@@ -106,7 +127,7 @@ export class Parse {
             if (this.Even(i)) {
                 let sxVal = Parts[i].split(':')[1]
                 if (sxVal !== undefined) {
-                    sxVal = sxVal.substring(0,1) == " " ? sxVal.substring(1,sxVal.length) : sxVal
+                    sxVal = sxVal.substring(0, 1) == " " ? sxVal.substring(1, sxVal.length) : sxVal
                     Synx.push(sxVal)
                 }
             }

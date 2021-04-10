@@ -5,11 +5,14 @@ import Main from './screens/Main.jsx'
 import Dice from './screens/Dice'
 import Info from './screens/Info'
 import New from './screens/New'
+import Update from './screens/Update'
+
 function App() {
 
   const Connect = () => {
     try { firebase.initializeApp(firebaseConfig) } catch (ex) { }
   }
+
   Connect()
 
   return (
@@ -23,6 +26,8 @@ function App() {
         <Route exact path="/Info/:id" render={(props) => <Info {...props} />} />
 
         <Route exact path="/New" render={(props) => <New {...props} />} />
+
+        <Route exact path="/Update" render={(props) => <Update {...props} />} />
 
 
         {/*   <Route  exact path="/Groups/:id"   render = {(props)=>  <Groups {...props} /> }  />   */}

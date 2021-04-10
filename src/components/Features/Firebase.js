@@ -13,6 +13,10 @@ export class firebaseApi {
     })
   }
 
+  Set = (param,info) => {
+    firebase.database().ref(param).set(info)
+  }
+
 }
 
 
