@@ -9,7 +9,7 @@ import '../App.css'
 const Fire = new firebaseApi()
 const Parser = new Parse('file:///D:/Software/React/web/infobase/src/screens/Classes/data.txt')
 
-export default class Dice extends React.Component {
+export default class Admin extends React.Component {
 
 
     constructor() {
@@ -33,103 +33,19 @@ export default class Dice extends React.Component {
     }
 
     componentDidMount = async () => {
-        //  let info = Parser.readTextFile()
 
-        let Info = await Fire.Once('/HashFormat/Entries')
+        // let Info = await Fire.Once('/HashFormat/Entries')
 
-        Info.forEach((item) => {
-            let JSN = item.val()
-            this.Data.push(JSN)
-        })
+        // Info.forEach((item) => {
+        //     let JSN = item.val()
+        //     this.Data.push(JSN)
+        // })
 
-        this.setState({ Info: this.Data })
-        this.Data = []; Info = []
-        console.clear()
-        this.PreSet()
+        // this.setState({ Info: this.Data })
+        // this.Data = []; Info = []
+        // console.clear()
+        // this.PreSet()
 
-    }
-
-    PreSet = () => {
-        this.state.Info.forEach((Item) => {
-            if (Item.Syntax !== "undefined" && Item.Syntax !== undefined) {
-                let neobj = {
-                    Syntax: Item.Syntax,
-                    Info: Item
-                }
-                console.log(neobj)
-                this.Resp.push(neobj)
-
-            }
-        })
-        // alert("done")
-        this.setState({ SearchResults: this.Resp })
-        this.Resp = []
-    }
-
-    AutoComplete = (value) => {
-        // @Info |item| (Item:string()) & ((Item.Syntax !== Nil)) @Item.Syntax |Sx| ((Sx != Nil))  ((Synx(0,val.length))) 
-
-        this.state.Info.forEach((Item) => {
-            console.log(JSON.stringify(Item))
-            if (Item.Syntax !== "undefined" && Item.Syntax !== undefined) {
-                Item.Syntax.forEach((Synx) => {
-                    if (Synx !== "undefined" && Synx !== undefined) {
-                        if (Synx.substring(0, value.length) == value) {
-                            let neobj = {
-                                Syntax: Synx,
-                                Info: Item
-                            }
-                            console.log(neobj)
-                            this.Resp.push(neobj)
-                        }
-                    }
-                })
-                this.setState({ SearchResults: this.Resp })
-            }
-        })
-        this.Resp = []
-        if (value == "") this.setState({ SearchResults: [] })
-    }
-
-
-
-
-    InsertOption = (Obj) => {
-        this.setState({
-            currentObject: Obj.Info,
-            Options: Obj.Info.Syntax,
-            KeyWords: Obj.Info.KeyWords,
-            SeeAlsos: Obj.Info.SeeAlso
-        })
-    }
-
-    Alert = (Item) => {
-        alert(JSON.stringify(Item))
-    }
-
-    Save = () => {
-        Fire.Set(`HashFormat/Entries/${this.state.currentObject.Id}`, this.state.currentObject)
-    }
-
-    addSyntax = (paramList, State, Value) => {
-
-        if (Array.isArray(paramList)) {
-            paramList.push(Value)
-            this.setState({ currentObject: this.state.currentObject })
-            this.setState({ [State]: paramList })
-
-        }
-        // alert(JSON.stringify(paramList))
-
-    }
-
-    Slice = (stateArray, newArray) => {
-        this.setState({ [stateArray]: newArray })
-        if (stateArray == 'KeyWords') this.state.currentObject.KeyWords = newArray
-        if (stateArray == 'Syntax') this.state.currentObject.Syntax = newArray
-        this.setState({ currentObject: this.state.currentObject })
-
-        this.Save()
     }
 
     Mobi = () => {
@@ -145,12 +61,6 @@ export default class Dice extends React.Component {
             <div style={Styles.Main}>
 
 
-                {/* <div style={Styles.OverLayer} >
-                    <input />
-                    <button style = {Styles.Button}></button>
-                </div>
-                */}
-
                 <div className="mobiHeader">
                     <div className="Title" style={Styles.Title} >Dice</div>
                     <button onClick={() => { this.Save() }} className="Button" id="Btn1" > Save </button>
@@ -161,19 +71,25 @@ export default class Dice extends React.Component {
 
                 <div>
                     <div style={{ ...Styles.textAreaContainer ,
-                         width : this.Mobi() ? '100%' : '45%'  , top: this.Mobi() ? '105%' : '15%'   }}
+                         width : this.Mobi() ? '100%' : '45%'  , top: this.Mobi() ? '105%' : '15%' ,
+                        }}
                          >
 
 
                         <Select options={this.state.Menu} className={ this.Mobi() ? "mobiSelect" : "Select"} />
 
 
-                        <div style={{ ...Styles.Heading, marginRight: '4.2%' }} >   Level Restrictions  </div>
+                        <div id = {this.Mobi ? 'mobiLR' : 'void' } 
+                        style={{ ...Styles.Heading, marginRight: '4.2%' , width:this.Mobi ? '85%':'42%' }}
+                         >   Level Restrictions  </div>
 
-                        <input style={{ ...Styles.Heading, marginLeft: '0%', marginTop: '2%', marginRight: "0.5%" }}
+                        <input
+                        id = {this.Mobi ? 'nKey' : 'void'}
+                        style={{ ...Styles.Heading, marginLeft: '0%', marginTop: '2%', marginRight: "0.5%" }}
                             placeholder='New Keyword' onChange={(e) => { this.setState({ newKey: e.target.value }) }} />
 
                         <img
+                            id = {this.Mobi ? 'plus1' : 'void'}
                             onClick={() => { this.addSyntax(this.state.currentObject.KeyWords, this.state['KeyWords'], this.state.newKey) }}
                             style={Styles.plusImage} alt="void" width="25px" height="25px"
                             src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
@@ -192,7 +108,8 @@ export default class Dice extends React.Component {
 
 
 
-                    <Container Top={30} Left={10} Width={21.5} Height={18} Items={this.state.KeyWords} Slice={this.Slice}
+                    <Container Top={ this.Mobi() ? 130 : 30} 
+                    Left={10} Width={21.5} Height={18} Items={this.state.KeyWords} Slice={this.Slice}
                         ArrayName={'KeyWords'}
                     />
 

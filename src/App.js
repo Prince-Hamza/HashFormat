@@ -6,6 +6,8 @@ import Dice from './screens/Dice'
 import Info from './screens/Info'
 import New from './screens/New'
 import Update from './screens/Update'
+import Admin from './screens/Admin'
+
 
 function App() {
 
@@ -29,8 +31,7 @@ function App() {
 
         <Route exact path="/Update" render={(props) => <Update {...props} />} />
 
-
-        {/*   <Route  exact path="/Groups/:id"   render = {(props)=>  <Groups {...props} /> }  />   */}
+        <Route exact path="/Admin" render={(props) => <Admin {...props} />} />
 
         {/*  Recieve id in Component
                var Data = this.props.match ; var params = Data.params;  var Routeid = params.id;   */}

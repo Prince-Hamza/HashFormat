@@ -58,7 +58,34 @@
   display: 'flex',
 }
 
+.mobiSelect{
+  position: absolute;
+  left:-8%;
+  width: 90%;
+}
+
+#mobiLR{
+  position: absolute;
+  top:68%;
+  left:-6%;
+}
+
+#nKey {
+  position: absolute;
+  top:105%;
+  width:100%
+}
+
+
+
+
+
+
+
 @media screen and (max-width: 600px) {
+
+  
+
   .Main {
     width:100%;
     left:0%
