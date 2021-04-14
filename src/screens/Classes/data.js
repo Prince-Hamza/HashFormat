@@ -910,11 +910,11 @@ BUY LIST SELL VALUE
 
 Syntax: buy   <object>
 
-Syntax: buy # <objects>
+Syntax: buy   <objects>
 
 Syntax: sell  <object>
 
-Syntax: browse<object>
+Syntax: browse <object>
 
 Syntax: value <object>
 
@@ -18855,7 +18855,8 @@ See also REVIVE, EMPOWER, DEFENSIVE.
 
 #698
 -1 EMPOWER EMPOWERMENT~
-syntax: empower offense, empower defense
+syntax: empower offense
+syntax: empower defense
 
 
 In order to use their more advanced skills, monks will have to prepare

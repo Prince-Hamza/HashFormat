@@ -1,57 +1,77 @@
 import React from 'react';
 import Select from 'react-select'
 import { Parse } from './Classes/Parse'
-import SearchResults from './SearchResults'
-import Container from './Container'
 import { firebaseApi } from '../components/Features/Firebase'
-import Users from './Users'
-import Files from './Files'
-import Settings from './Settings'
-
+import { EmailSignUp } from '../components/Features/FirebaseAuth'
+import SMTP from './SMTP'
+import AdminSearchResults from './AdminSearchResults';
+import '../App.css'
+import API from './Api';
 const Fire = new firebaseApi()
 const Parser = new Parse('file:///D:/Software/React/web/infobase/src/screens/Classes/data.txt')
 
-export default class Admin extends React.Component {
+class Settings extends React.Component {
 
 
     constructor() {
         super()
         this.state = {
-            Files: false,
-            Users: true,
-            Settings: false,
+            Username: '',
+            Email: '',
+            Password: '',
+            Role: '',
+            Success: false,
+            Users: [
+                { Name: 'Humza', Role: 'Dev' }
+            ]
+
+
         }
-       
+
     }
 
     componentDidMount = async () => {
-        this.setState({ Selected: 'Users' })
+
     }
-
-
 
     Mobi = () => {
         var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
         return isMobile;
     }
 
-    Color = (label) => { return this.state.Selected == label ? 'blueviolet' : 'lightgray' }
+
+    SuccessMsg = (x) => {
+        this.setState({ Success: x })
+
+    }
+
+    updateResp = (n,r) => {
+       this.state.Users.push({Name:n,Role:r})
+       this.setState({Users:this.state.Users})
+    }
 
 
     render() {
         return (
             <div style={Verstyle.Theme} >
-                <div style={Verstyle.TabView} >
-                    <div style={{ ...Verstyle.Tab, borderColor: this.Color('Files'), color: this.Color('Files') }} onClick={() => { this.setState({ Selected: 'Files' }) }} >  Files  </div>
-                    <div style={{ ...Verstyle.Tab, borderColor: this.Color('Users'), color: this.Color('Users') }} onClick={() => { this.setState({ Selected: 'Users' }) }}  >  Users  </div>
-                    <div style={{ ...Verstyle.Tab, borderColor: this.Color('Settings'), color: this.Color('Settings') }} onClick={() => { this.setState({ Selected: 'Settings' }) }} > Settings  </div>
+
+
+                     
+                     <SMTP />
+                     <API style = {{ left:  Mobile() ? '0%' : '50%'}} />
+
+
+
+
+
+                {/* <div style={Verstyle.Select} >
+                    <Select options={Menu} onChange={(opt) => { this.setState({ Role: opt.label }) }} />
                 </div>
 
-                <div style={Verstyle.BlueLine} />
+                <button style={Verstyle.Button} onClick={() => { this.AddUser() }} > Add User </button>
+ */}
 
-                {this.state.Selected == 'Users' && <Users />}
-                {this.state.Selected == 'Files' && <Files />}
-                {this.state.Selected == 'Settings' && <Settings />}
+                {this.state.Success && <div style={Verstyle.Success} >    <div> Success </div>   </div> }
 
 
             </div>
@@ -60,6 +80,7 @@ export default class Admin extends React.Component {
 }
 
 
+export default Settings
 
 const Mobile = () => {
     var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -67,25 +88,47 @@ const Mobile = () => {
 }
 
 
-let Flex = {
+const Menu = [
+    { label: "Primary", value: 1 }, { label: "Author", value: 2 },
+    { label: 'Admin', value: 3 }, { label: 'Super Admin', value: 4 }
+]
+
+
+
+let FlexCenter = {
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center'
 }
 
 
+
+
 const Verstyle = {
     Theme: {
         position: 'absolute',
-        backgroundColor: 'white',
-        height: '100%',
-        width: '100%'
+        top: '4.5%',
+        height: '95%',
+        width: '100%',
+
+    },
+    Select: {
+        position: 'absolute',
+        width: '20%',
+        top: '60%',
+        left: '18%'
+    },
+    ItemView: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'center'
     },
     TabView: {
         position: 'absolute',
         top: '0%',
-        left: Mobile() ? '3%' : '0%',
-        width: Mobile() ? '100%' : '20%',
+        left: '0%',
+        width: '20%',
         height: '25px',
         display: 'flex',
         flexDirection: 'row',
@@ -97,20 +140,56 @@ const Verstyle = {
         width: '30%',
         height: '100%',
         borderStyle: 'solid',
+        borderColor: 'whitesmoke',
         borderWidth: '2px',
-        marginRight: Mobile() ? '0%' : '1%',
+        marginRight: '1%',
         cursor: 'pointer',
-        ...Flex,
+        ...FlexCenter,
     },
-    BlueLine: {
-        position: 'absolute',
-        left: '0%',
-        top: '4%',
-        width: '100%',
-        height: '0.6%',
-        backgroundColor: 'blueviolet'
-    }
 
+    InputsView: {
+        ...FlexCenter,
+        position:'absolute',
+        top:'5%',
+        left:'5%',
+        flexDirection: 'column',
+        width: '40%',
+        height: '90%',
+        marginBottom: '3%',
+        borderStyle:'solid',
+        borderColor:'lightgray'
+
+    },
+    Input: {
+        height: '65%'
+    },
+
+    Button: {
+        position: 'absolute',
+        cursor: 'pointer',
+        top: '70%',
+        left: '20%',
+        width: '15%',
+        height: '4%',
+        outline: 'none',
+        borderStyle: 'none',
+        borderRadius: '50px'
+
+    },
+    Success: {
+        position: 'absolute',
+        cursor: 'pointer',
+        top: '90%',
+        left: '5%',
+        width: '50%',
+        height: '4%',
+        outline: 'none',
+        borderStyle: 'none',
+        borderRadius: '50px',
+        backgroundColor: 'cyan',
+        color: 'magenta',
+        ...FlexCenter
+    }
 
 }
 

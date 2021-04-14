@@ -15,18 +15,16 @@ export class Parse {
         let Items = this.readItems()
         let Jsn = this.getJSON(Items[n])
         return Jsn
-
-
-
     }
 
+    
 
-    readTextFile = () => {
+    getInfoAll = () => {
         var Total = []
         let Items = this.readItems()
         Items.forEach((Item) => {
-            let Jsn = this.getJSON(Item)
-            Total.push(Jsn)
+           let JSN = this.getJSON(Item)
+           Total.push(JSN)
         })
         return Total
     }
@@ -51,9 +49,20 @@ export class Parse {
     }
 
     getKeyWords = (item) => {
-        let Words = item.substring(item.indexOf('-') + 3, item.indexOf('~'))
-        let WordsArray = Words.split(" ")
-        return WordsArray
+        let Pass = item.substring(item.indexOf('\n') + 1 , item.length - 1)
+        let Section1 = Pass.substring(3,Pass.indexOf('\n') - 1)
+        let Pass2 = Pass.substring(Pass.indexOf('\n') + 1 , item.length - 1)
+        let Section2 = Pass2.substring(0,Pass2.indexOf('\n'))
+        let Final = Section2.includes('Syntax:') ? Section1 : Section2;
+        let KeyWords = Section1 + Section2
+        if (Final.includes('Syntax:')) alert(Final)
+        console.log(Final.split(' '))
+        return Final.split(' ')
+
+        //let WordsArray = Section2.split(" ")
+        //  if (Section2.includes('Syntax:')) alert(Section2)
+        //alert(item)
+        //return WordsArray
     }
 
     getSeeAlso = (item) => {
@@ -151,6 +160,32 @@ export class Parse {
         let Sections = Info.split('#')
         return Sections;
     }
+
+    AutoComplete = (value) => {
+        // @Info |item| (Item:string()) & ((Item.Syntax !== Nil)) @Item.Syntax |Sx| ((Sx != Nil))  ((Synx(0,val.length))) 
+
+        this.state.Info.forEach((Item) => {
+            console.log(JSON.stringify(Item))
+            if (Item.Syntax !== "undefined" && Item.Syntax !== undefined) {
+                Item.Syntax.forEach((Synx) => {
+                    if (Synx !== "undefined" && Synx !== undefined) {
+                        if (Synx.substring(0, value.length) == value) {
+                            let neobj = {
+                                Syntax: Synx,
+                                Info: Item
+                            }
+                            console.log(neobj)
+                            this.Resp.push(neobj)
+                        }
+                    }
+                })
+                this.setState({ SearchResults: this.Resp })
+            }
+        })
+        this.Resp = []
+        if (value == "") this.setState({ SearchResults: [] })
+    }
+
 
 }
 

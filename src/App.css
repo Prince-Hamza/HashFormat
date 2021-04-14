@@ -1,5 +1,12 @@
 
 
+.Blue:hover {
+  border-color: blueviolet;
+}
+
+.Blue {
+  border-color:whitesmoke
+}
 
 .Main {
   background-color: white;
@@ -12,7 +19,6 @@
   top: 6%;
   left: 18%;
   font: 24px arial
-
 }
 .Button {
   position: absolute;
@@ -22,7 +28,8 @@
   background-Color: blue;
   border-radius: 9px;
   color: white;
-  border-style: none
+  border-style: none;
+  cursor:pointer
 }
 
 
@@ -35,6 +42,14 @@
   height:1%;
   color:rgb(194, 152, 194);
   margin-right: 5.3%;
+}
+
+.SlctAdmin {
+  position: absolute;
+  top:61%;
+  left:21%;
+  width: 16%;
+  color:rgb(194, 152, 194);
 }
 
 
@@ -60,7 +75,7 @@
 
 .mobiSelect{
   position: absolute;
-  left:-8%;
+  left:-2%;
   width: 90%;
 }
 
@@ -84,7 +99,12 @@
 
 @media screen and (max-width: 600px) {
 
-  
+  .SlctAdmin{
+    top:148%;
+    left:30%;
+    width:50%;
+  }
+
 
   .Main {
     width:100%;
@@ -123,9 +143,10 @@
 #Search {
   left: 10%;
   width: 40%;
+  top:10%
 }
 
-#Btn3 {top: 20%; left: 55%; width: 40% }
+#Btn3 {top: 10%; left: 55%; width: 40% }
 
 #SASearch {
   display: none;

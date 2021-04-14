@@ -1,10 +1,10 @@
 import React from 'react';
 import '../App.css'
 
-export default class SearchResults extends React.Component {
+export default class Pending extends React.Component {
 
     Insert = (Item) => {
-        //  alert(JSON.stringify(Item))
+        //  alert(JSON.stringify(Item.Info))
         let x = this.props.addToOptions ? this.props.addToOptions : this.props.Alert
         x(Item)
 
@@ -13,7 +13,7 @@ export default class SearchResults extends React.Component {
         //    } else if (this.props.Alert) this.props.Alert(Item)
 
         // this.props.Alert(Item)
-        // ((fn:addToOptions)(Item)) : ((fn:Alert)(Item))
+        // ((fn:addToOptions)(Item))) : ((fn:Alert)(Item))
 
         // {{JSN|item,index| ((item.child))   }}
 
@@ -29,13 +29,14 @@ export default class SearchResults extends React.Component {
                         ...Styles.Container, left: this.props.Left + "%", top: this.props.Top + "%",
                         width: this.props.Width + "%", height: this.props.Height + "%"
                     }}
+
                 >
                     {this.props.Items.map(Item => {
                         return (
 
                             <div key={Math.random()} style={Styles.Item}>
 
-                                <div id="respItem" onClick={() => { this.Insert(Item) }}> {Item.KeyWord} </div>
+                                <div id="respItem" onClick={() => { this.Insert(Item) }}> {Item.Name} </div>
 
                             </div>
                         )

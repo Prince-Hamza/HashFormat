@@ -1,7 +1,7 @@
 import React from 'react';
 import Select from 'react-select'
 import { Parse } from './Classes/Parse'
-import SearchResults from './SearchResults'
+import Pending from './Pending'
 import Container from './Container'
 import { firebaseApi } from '../components/Features/Firebase'
 import '../App.css'
@@ -9,7 +9,7 @@ import '../App.css'
 const Fire = new firebaseApi()
 const Parser = new Parse('file:///D:/Software/React/web/infobase/src/screens/Classes/data.txt')
 
-export default class Dice extends React.Component {
+export default class Files extends React.Component {
 
 
     constructor() {
@@ -22,7 +22,6 @@ export default class Dice extends React.Component {
             currentObject: [],
             KeyWords: [],
             SeeAlsos: [],
-            EntryName:'',
             Description: "",
             newKey: '',
             newSyntax: '',
@@ -31,29 +30,24 @@ export default class Dice extends React.Component {
         this.Data = []
         this.Resp = []
         this.Opts = []
-        this.KeyWordsArray = []
+        this.KeyWordsArray=[]
     }
 
     componentDidMount = async () => {
-        //  let info = Parser.readTextFile()
+        let Info = await Fire.Once('Pending')
 
-        let Info = await Fire.Once('/HashFormat/Entries')
-
-        Info.forEach((Obj) => {
-            let Item = Obj.val()
-            Item.KeyWords.forEach((Word)=>{
-
+        Info.forEach((Item) => {
+            let Data = Item.val()
                 let neobj = {
-                    KeyWord: Word,
-                    Info: Item
+                    Name: Data.Name,
+                    Info: Data
                 }
-                 this.KeyWordsArray.push(neobj)
-            })
-            // this.Data.push(JSN)
+                this.KeyWordsArray.push(neobj)
+
+
         })
 
-        // alert( JSON.stringify(this.KeyWordsArray[3]))
-
+        // alert(this.KeyWordsArray[0].Name)
 
         this.setState({ Info: this.KeyWordsArray })
         Info = []
@@ -66,7 +60,6 @@ export default class Dice extends React.Component {
                     Syntax: Item.Syntax,
                     Info: Item
                 }
-
                 console.log(neobj)
                 this.Resp.push(neobj)
 
@@ -82,24 +75,24 @@ export default class Dice extends React.Component {
 
         this.state.Info.forEach((Item) => {
             console.log(JSON.stringify(Item))
-            if (Item.KeyWord !== "undefined" && Item.KeyWord !== undefined) {
-                // Item.KeyW.forEach((Synx) => {
-                    // if (Synx !== "undefined" && Synx !== undefined) {
-                        if (Item.KeyWord.substring(0, value.length) == value) {
+            if (Item.Syntax !== "undefined" && Item.Syntax !== undefined) {
+                Item.Syntax.forEach((Synx) => {
+                    if (Synx !== "undefined" && Synx !== undefined) {
+                        if (Synx.substring(0, value.length) == value) {
                             let neobj = {
-                                KeyWord: Item.KeyWord,
+                                Syntax: Synx,
                                 Info: Item
                             }
                             console.log(neobj)
                             this.Resp.push(neobj)
                         }
-                    //}
-                // })
-                this.setState({ Info: this.Resp })
+                    }
+                })
+                this.setState({ SearchResults: this.Resp })
             }
         })
         this.Resp = []
-        if (value == "") this.setState({ Info: [] })
+        if (value == "") this.setState({ SearchResults: [] })
     }
 
 
@@ -107,7 +100,6 @@ export default class Dice extends React.Component {
 
     InsertOption = (Obj) => {
         this.setState({
-            EntryName:Obj.KeyWord,
             currentObject: Obj.Info,
             Options: Obj.Info.Syntax,
             KeyWords: Obj.Info.KeyWords,
@@ -120,17 +112,18 @@ export default class Dice extends React.Component {
     }
 
     Save = () => {
-        Fire.Set(`Pending/${this.state.currentObject.Id}`, this.state.currentObject)
+        Fire.Set(`HashFormat/Entries/${this.state.currentObject.Id}`, this.state.currentObject)
+        alert("Update Successful")
+
     }
 
     addSyntax = (paramList, State, Value) => {
 
         if (Array.isArray(paramList)) {
             paramList.push(Value)
-            this.state.currentObject.Name = this.state.EntryName
-            alert(JSON.stringify(this.state.currentObject))
             this.setState({ currentObject: this.state.currentObject })
             this.setState({ [State]: paramList })
+
         }
         // alert(JSON.stringify(paramList))
 
@@ -165,25 +158,27 @@ export default class Dice extends React.Component {
                 */}
 
                 <div className="mobiHeader">
-                    <div className="Title" style={Styles.Title} >  {this.state.EntryName}  </div>
-                    <button onClick={() => {alert("Pending for Approval"); this.Save() }} className="Button" id="Btn1" > Save </button>
-                    <button className="Button" id="Btn2" style={{ ...Styles.Button }} > Revert </button>
+                    <div className="Title" style={Styles.Title} >Entry name</div>
+                    <button onClick={() => { this.Save() }} className="Button" id="Btn1" > Approve </button>
+                    <button className="Button" id="Btn2" style={{ ...Styles.Button }} > Deny </button>
                 </div>
 
 
 
                 <div>
-                    <div style={{ ...Styles.textAreaContainer ,
-                         width : this.Mobi() ? '100%' : '45%'  , top: this.Mobi() ? '105%' : '15%'   }} >
+                    <div style={{
+                        ...Styles.textAreaContainer,
+                        width: this.Mobi() ? '100%' : '45%', top: this.Mobi() ? '105%' : '15%'
+                    }}
+                    >
 
 
-                        <Select options={this.state.Menu} className={ this.Mobi() ? "mobiSelect" : "Select"} />
+                        <Select options={this.state.Menu} className={this.Mobi() ? "mobiSelect" : "Select"} />
 
 
                         <div style={{ ...Styles.Heading, marginRight: '4.2%' }} >   Level Restrictions  </div>
 
-                        <input style={{ ...Styles.Heading, width: this.Mobi() ? '80%' : '42%'  ,marginLeft: '0%',
-                         marginTop: '2%', marginRight: "0.5%" }}
+                        <input style={{ ...Styles.Heading, marginLeft: '0%', marginTop: '2%', marginRight: "0.5%" }}
                             placeholder='New Keyword' onChange={(e) => { this.setState({ newKey: e.target.value }) }} />
 
                         <img
@@ -205,21 +200,20 @@ export default class Dice extends React.Component {
 
 
 
-                    <Container Top={ this.Mobi() ? 120 : 30  } 
-                    Left={ this.Mobi() ? 3 : 10  } Width={ this.Mobi() ? 90 : 21.5} Height={18} Items={this.state.KeyWords} Slice={this.Slice}
+                    <Container Top={30} Left={10} Width={21.5} Height={18} Items={this.state.KeyWords} Slice={this.Slice}
                         ArrayName={'KeyWords'}
                     />
 
 
 
 
-                    <Container Top={ this.Mobi ? 200 : 30} Left={33.5} Width={21.5} Height={18} Items={this.state.Options} Slice={this.Slice}
+                    <Container Top={30} Left={33.5} Width={21.5} Height={18} Items={this.state.Options} Slice={this.Slice}
                         ArrayName={'Options'}
                     />
 
 
 
-                    {/* <textarea type="text" style={Styles.DescriptionBox} value={this.state.currentObject.Description} /> */}
+                    <textarea type="text" style={Styles.DescriptionBox} value={this.state.currentObject.Description} />
 
 
                 </div>
@@ -227,14 +221,9 @@ export default class Dice extends React.Component {
 
                 <div className="mobiSearch" >
 
-                    <input id="Search" placeholder="Search" onChange={(e) => { this.AutoComplete(e.target.value) }} />
-
-                    <button className="Button" id="Btn3"  >New Entry</button>
-
-
-                    <SearchResults
-                        Top={ this.Mobi() ? 20 : 30}
-                        Left= {this.Mobi() ? 10 : 60}
+                    <Pending
+                        Top={16.5}
+                        Left={this.Mobi() ? 10 : 60}
                         Width={this.Mobi() ? 83 : 18}
                         Height={this.Mobi() ? 60 : 50}
                         Items={this.state.Info}
@@ -243,7 +232,7 @@ export default class Dice extends React.Component {
 
                 </div>
 
-{/*                 
+
                 <Container id="SASearch" Top={61.5} Left={33.5} Width={21.5} Height={18} Items={this.state.SeeAlsos} />
 
                 <input style={{ ...Styles.Heading, width: '18%', position: 'absolute', top: "55%", left: '31.5%', marginLeft: '2%' }}
@@ -257,7 +246,7 @@ export default class Dice extends React.Component {
                     style={{ ...Styles.plusImage, position: 'absolute', left: '53.5%', top: '52%' }}
                     alt="void" width="25px" height="25px"
                     src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
- */}
+
 
 
             </div>
@@ -267,19 +256,11 @@ export default class Dice extends React.Component {
 
 
 
-
-const Mobi = () => {
-    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-    return isMobile;
-}
-
-
-
 let Styles = ({
 
     Main: {
         position: "absolute",
-        top: '0%',
+        top: '5%',
         left: '0%',
         width: "100%",
         height: '100%',
@@ -304,11 +285,11 @@ let Styles = ({
     textAreaContainer: {
         position: "absolute",
         top: "15%",
-        left: Mobi() ? '0%' : "10%",
-        width: Mobi() ? '100%' : '45%',
+        left: "10%",
+        width: '45%',
         display: 'flex',
         flexWrap: 'wrap',
-        justifyContent: 'center',
+        justifyContent: 'space-evenly',
         alignItems: 'center'
     },
     DropMenu: {
@@ -342,8 +323,8 @@ let Styles = ({
         width: '42%',
         height: '18px',
         font: '12px tmes new roman',
-        justifyContent: Mobi() ? 'flex-start' : 'center',
-        alignItems: Mobi() ? 'flex-start' : 'center',
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     plusImage: {
         marginTop: '1.5%',

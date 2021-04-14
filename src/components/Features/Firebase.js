@@ -21,11 +21,3 @@ export class firebaseApi {
 
 
 
-
-// firebase.database()
-// .ref(`/ChatPlugin/Conversations/Messaging/${this.Key}`)
-// .on("child_added", (res) => {
-//   MsgsArray.push(res.val());
-//   this.setState({ MsgsArray: MsgsArray, Complete: true });
-//   // else this.CompLoad = false;
-// });

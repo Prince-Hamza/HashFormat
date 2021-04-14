@@ -23,9 +23,9 @@ export default class Container extends React.Component {
         //     let info = resp.val()
         //     this.setState({ EntryNum: info.length })
         // })
-        //this.scheme()
-      //let i = Parser.getInfo(353)
-      //alert(JSON.stringify(i))
+        this.scheme()
+      //let i = Parser.getInfoAll()
+    //   alert(JSON.stringify(i))
     }
 
     Update = () => {
@@ -47,7 +47,7 @@ export default class Container extends React.Component {
 
     scheme = () => {
 
-        let info = Parser.readTextFile()
+        let info = Parser.getInfoAll()
 
         // let EntryInfo = firebase.database().ref('/HashFormat/Entries/Info')
 

@@ -42,9 +42,9 @@ export default class Main extends React.Component {
 
           <button style={Styles.Button} onClick={() => { this.SignIn() }} > Login </button>
 
-          <div style={Styles.Create} onClick={() => { this.SignUp() }}>
+          {/* <div style={Styles.Create} onClick={() => { this.SignUp() }}>
             SignUp
-          </div>
+          </div> */}
 
         </div>
 
@@ -74,15 +74,17 @@ let Styles = ({
   },
   Choice: {
     display: 'flex',
-    flexDirection: 'row'
+    flexDirection: 'row',
+    alignSelf:'center'
   },
   Button: {
     marginRight: '16%',
     height: '30px',
-    width: '100px',
+    width: '130px',
     backgroundColor: 'whitesmoke',
     borderStyle:"none",
-    cursor:"pointer"
+    cursor:"pointer",
+    borderRadius:'50px'
   },
   Input: {
     marginBottom: "4%",

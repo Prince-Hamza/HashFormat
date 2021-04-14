@@ -19,18 +19,27 @@ export class SpreadSheetApi {
   }
 
 
+  readFirebase = async (firePath) => {
+    return await axios.get(this.GAPSUri, {
+     params: { Method: "Read" , Path: firePath }
+   })
+   .then((res) => {
+     return res.data;
+    //  let Stringjs = `[${info}]`
+    //  return JSON.parse(Stringjs)
+ })
+}
 
 
   sendEmail = (emailAddress, Message, Subject) => {
-      alert(emailAddress)
     return axios.get(this.GAPSUri, {
-        params: { Email: emailAddress, Message: Message, Subject: Subject },
+        params: { Method:'Email' , Email: emailAddress, Message: Message, Subject: Subject },
       })
       .then((res) => {
-        let info = res.data;
-        var myObj = JSON.parse(res.data);
+        alert("Success")
+        // let info = res.data;
+        // var myObj = JSON.parse(res.data);
 
-        alert(myObj.name);
       })
   };
 

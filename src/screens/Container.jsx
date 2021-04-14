@@ -52,10 +52,15 @@ export default class Container extends React.Component {
 
                                         <div style={{ width: '150px' }} >  {Item}    </div>
 
-                                        <div style={{ width: '50px', marginLeft: 'auto' }} onClick={() => {
+                                        <img 
+                                        src = {"https://im4.ezgif.com/tmp/ezgif-4-067dcb8275b5.png"}
+                                        style={{ width: '20px',height:'20px' , marginLeft: 'auto'  }} 
+                                        onClick={() => {
                                             this.props.Items.splice(index, 1)
                                             this.props.Slice(this.props.ArrayName, this.props.Items)
-                                        }} > minus </div>
+                                        }}
+                                        
+                                        /> 
 
 
                                     </div>
