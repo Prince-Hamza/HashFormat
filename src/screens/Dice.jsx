@@ -3,8 +3,10 @@ import Select from 'react-select'
 import { Parse } from './Classes/Parse'
 import SearchResults from './SearchResults'
 import Container from './Container'
+import TitleKeyWord from './TitleKeyWord'
 import { firebaseApi } from '../components/Features/Firebase'
 import '../App.css'
+import LevelRestrict from './LevelRestrict';
 
 const Fire = new firebaseApi()
 const Parser = new Parse('file:///D:/Software/React/web/infobase/src/screens/Classes/data.txt')
@@ -20,9 +22,10 @@ export default class Dice extends React.Component {
             Options: [],
             Menu: [{ value: 1, label: "Everyone" }],
             currentObject: [],
+            Syntax: [],
             KeyWords: [],
             SeeAlsos: [],
-            EntryName:'',
+            EntryName: '',
             Description: "",
             newKey: '',
             newSyntax: '',
@@ -41,13 +44,13 @@ export default class Dice extends React.Component {
 
         Info.forEach((Obj) => {
             let Item = Obj.val()
-            Item.KeyWords.forEach((Word)=>{
+            Item.KeyWords.forEach((Word) => {
 
                 let neobj = {
                     KeyWord: Word,
                     Info: Item
                 }
-                 this.KeyWordsArray.push(neobj)
+                this.KeyWordsArray.push(neobj)
             })
             // this.Data.push(JSN)
         })
@@ -84,16 +87,16 @@ export default class Dice extends React.Component {
             console.log(JSON.stringify(Item))
             if (Item.KeyWord !== "undefined" && Item.KeyWord !== undefined) {
                 // Item.KeyW.forEach((Synx) => {
-                    // if (Synx !== "undefined" && Synx !== undefined) {
-                        if (Item.KeyWord.substring(0, value.length) == value) {
-                            let neobj = {
-                                KeyWord: Item.KeyWord,
-                                Info: Item
-                            }
-                            console.log(neobj)
-                            this.Resp.push(neobj)
-                        }
-                    //}
+                // if (Synx !== "undefined" && Synx !== undefined) {
+                if (Item.KeyWord.substring(0, value.length) == value) {
+                    let neobj = {
+                        KeyWord: Item.KeyWord,
+                        Info: Item
+                    }
+                    console.log(neobj)
+                    this.Resp.push(neobj)
+                }
+                //}
                 // })
                 this.setState({ Info: this.Resp })
             }
@@ -107,7 +110,7 @@ export default class Dice extends React.Component {
 
     InsertOption = (Obj) => {
         this.setState({
-            EntryName:Obj.KeyWord,
+            EntryName: Obj.KeyWord,
             currentObject: Obj.Info,
             Options: Obj.Info.Syntax,
             KeyWords: Obj.Info.KeyWords,
@@ -123,16 +126,51 @@ export default class Dice extends React.Component {
         Fire.Set(`Pending/${this.state.currentObject.Id}`, this.state.currentObject)
     }
 
-    addSyntax = (paramList, State, Value) => {
+    AddSyntax = (paramList) => {
+
+        // alert(paramList)
+
+        // alert(this.state.newSyntax)
+
+        if (!Array.isArray(paramList)) paramList = []
+
 
         if (Array.isArray(paramList)) {
-            paramList.push(Value)
+            paramList.push(this.state.newSyntax)
             this.state.currentObject.Name = this.state.EntryName
-            alert(JSON.stringify(this.state.currentObject))
+            // alert(JSON.stringify(this.state.currentObject))
             this.setState({ currentObject: this.state.currentObject })
-            this.setState({ [State]: paramList })
+            this.setState({ Syntax: paramList })
+            alert(this.state.newSyntax)
         }
         // alert(JSON.stringify(paramList))
+
+    }
+
+    AddKeyWord = (paramList) => {
+
+        if (Array.isArray(paramList)) {
+            paramList.push(this.state.newKey)
+            this.state.currentObject.Name = this.state.EntryName
+            // alert(JSON.stringify(this.state.currentObject))
+            this.setState({ currentObject: this.state.currentObject })
+            this.setState({ KeyWords: paramList })
+        }
+        // alert(JSON.stringify(paramList))
+
+    }
+
+    
+    AddSeeAlso = (paramList) => {
+        
+        if (!Array.isArray(paramList)) paramList = []
+        if (Array.isArray(paramList)) {
+            paramList.push(this.state.newSA)
+            this.state.currentObject.Name = this.state.EntryName
+            this.setState({ currentObject: this.state.currentObject })
+            this.setState({ SeeAlsos: paramList })
+            // alert(this.state.newSyntax)
+        }
 
     }
 
@@ -152,74 +190,105 @@ export default class Dice extends React.Component {
 
     }
 
+    SetSyntaxValue = (value) => {
+        alert(value)
+        this.setState({ newSyntax: value })
+    }
+
+    SetKeyValue = (value) => {
+        this.setState({ newKey: value })
+    }
+
+    SetSeeAlsoValue = (value) => {
+        this.setState({ SeeAlso: value })
+    }
 
     render() {
         return (
             <div style={Styles.Main}>
 
-
-                {/* <div style={Styles.OverLayer} >
-                    <input />
-                    <button style = {Styles.Button}></button>
-                </div>
-                */}
-
                 <div className="mobiHeader">
                     <div className="Title" style={Styles.Title} >  {this.state.EntryName}  </div>
-                    <button onClick={() => {alert("Pending for Approval"); this.Save() }} className="Button" id="Btn1" > Save </button>
+                    <button onClick={() => { alert("Pending for Approval"); this.Save() }} className="Button" id="Btn1" > Save </button>
                     <button className="Button" id="Btn2" style={{ ...Styles.Button }} > Revert </button>
                 </div>
 
 
 
+
+
                 <div>
-                    <div style={{ ...Styles.textAreaContainer ,
-                         width : this.Mobi() ? '100%' : '45%'  , top: this.Mobi() ? '105%' : '15%'   }} >
+                    <div style={Styles.textAreaContainer} >
 
+                        <Select options={this.state.Menu} className={this.Mobi() ? "mobiSelect" : "Select"} />
 
-                        <Select options={this.state.Menu} className={ this.Mobi() ? "mobiSelect" : "Select"} />
-
-
-                        <div style={{ ...Styles.Heading, marginRight: '4.2%' }} >   Level Restrictions  </div>
-
-                        <input style={{ ...Styles.Heading, width: this.Mobi() ? '80%' : '42%'  ,marginLeft: '0%',
-                         marginTop: '2%', marginRight: "0.5%" }}
-                            placeholder='New Keyword' onChange={(e) => { this.setState({ newKey: e.target.value }) }} />
-
-                        <img
-                            onClick={() => { this.addSyntax(this.state.currentObject.KeyWords, this.state['KeyWords'], this.state.newKey) }}
-                            style={Styles.plusImage} alt="void" width="25px" height="25px"
-                            src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
-
-
-                        <input style={{ ...Styles.Heading, width: '40%', marginLeft: '2%', marginTop: '2%' }}
-                            placeholder={"New Syntax"} onChange={(e) => { this.setState({ newSyntax: e.target.value }) }} />
-
-
-                        <img onClick={() => { this.addSyntax(this.state.currentObject.Syntax, this.state['Options'], this.state.newSyntax) }} style={Styles.plusImage} alt="void" width="25px" height="25px"
-                            src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
-
-
+                        <TitleKeyWord
+                            SetValue={this.SetKeyValue}
+                            currentObject={this.state.currentObject}
+                            AddKeyWord={this.AddKeyWord}
+                        />
 
                     </div>
 
 
+                    <div style={{ ...Styles.textAreaContainer, left: Mobi() ? '0%' : '34%', top: Mobi() ? '145%' : '13%' }} >
 
-                    <Container Top={ this.Mobi() ? 120 : 30  } 
-                    Left={ this.Mobi() ? 3 : 10  } Width={ this.Mobi() ? 90 : 21.5} Height={18} Items={this.state.KeyWords} Slice={this.Slice}
+                        <div style={{
+                            ...Styles.Heading, width: '90%', marginTop: '7%', alignSelf: 'flex-start',
+                            justifyContent: 'flex-start'
+                        }}
+                        > Level Restrictions </div>
+
+
+                        <LevelRestrict
+                            AddSyntax={this.AddSyntax}
+                            SetValue={this.SetSyntaxValue}
+                            currentObject={this.state.currentObject}
+                        />
+
+                    </div>
+
+
+                    {/* <div style={{ ...Styles.Heading, marginRight: '4.2%' }} >   Level Restrictions  </div>
+
+
+<input style={{ ...Styles.Heading, width: '40%', marginLeft: '2%', marginTop: '2%' }}
+    placeholder={"New Syntax"} onChange={(e) => { this.setState({ newSyntax: e.target.value }) }} />
+
+
+<img onClick={() => { this.addSyntax(this.state.currentObject.Syntax, this.state['Options'], this.state.newSyntax) }} style={Styles.plusImage} alt="void" width="25px" height="25px"
+    src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
+
+ */}
+
+
+
+
+
+                    <Container
+                        Top={this.Mobi() ? 120 : 30}
+                        Left={this.Mobi() ? 3 : 10}
+                        Width={this.Mobi() ? 90 : 21.5}
+                        Height={18}
+                        Items={this.state.KeyWords} Slice={this.Slice}
                         ArrayName={'KeyWords'}
                     />
 
 
 
 
-                    <Container Top={ this.Mobi ? 200 : 30} Left={33.5} Width={21.5} Height={18} Items={this.state.Options} Slice={this.Slice}
+                    <Container
+                        Top={this.Mobi() ? 165 : 30}
+                        Left={this.Mobi() ? 3 : 34}
+                        Width={this.Mobi() ? 90 : 21.5}
+                        Height={18}
+                        Items={this.state.Syntax} Slice={this.Slice}
                         ArrayName={'Options'}
                     />
 
 
 
-                    {/* <textarea type="text" style={Styles.DescriptionBox} value={this.state.currentObject.Description} /> */}
+                    <textarea type="text" style={Styles.DescriptionBox} value={this.state.currentObject.Description} />
 
 
                 </div>
@@ -233,9 +302,9 @@ export default class Dice extends React.Component {
 
 
                     <SearchResults
-                        Top={ this.Mobi() ? 20 : 30}
-                        Left= {this.Mobi() ? 10 : 60}
-                        Width={this.Mobi() ? 83 : 18}
+                        Top={this.Mobi() ? 20 : 30}
+                        Left={this.Mobi() ? 10 : 60}
+                        Width={this.Mobi() ? 80 : 18}
                         Height={this.Mobi() ? 60 : 50}
                         Items={this.state.Info}
                         addToOptions={this.InsertOption}
@@ -243,22 +312,40 @@ export default class Dice extends React.Component {
 
                 </div>
 
-{/*                 
-                <Container id="SASearch" Top={61.5} Left={33.5} Width={21.5} Height={18} Items={this.state.SeeAlsos} />
 
-                <input style={{ ...Styles.Heading, width: '18%', position: 'absolute', top: "55%", left: '31.5%', marginLeft: '2%' }}
+
+                <input style={{
+                    ...Styles.Heading,
+                    position: 'absolute',
+                    width: Mobi() ? '80%' : '18%',
+                    top: Mobi() ? '220%' : "55%",
+                    left: Mobi() ? '0%' : '31.5%',
+                    marginLeft: '2%'
+                }}
                     onChange={(e) => { this.setState({ newSA: e.target.value }) }}
                     placeholder={"Search"} />
 
 
                 <img id="Plus"
-                    onClick={() => { this.addSyntax(this.state.currentObject.SeeAlso, this.state['SeeAlsos'], this.state.newSA) }}
+                    onClick={() => { this.AddSeeAlso(this.state.currentObject.SeeAlso) }}
 
-                    style={{ ...Styles.plusImage, position: 'absolute', left: '53.5%', top: '52%' }}
+                    style={{
+                        ...Styles.plusImage,
+                        position: 'absolute',
+                        left: Mobi() ? '89%' : '53.5%',
+                        top: Mobi() ? '219.5%' : '52%'
+                    }}
                     alt="void" width="25px" height="25px"
                     src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
- */}
 
+
+                <Container id="SASearch"
+                    Top={Mobi() ? 230 : 61.5}
+                    Left={Mobi() ? 2 : 33.5}
+                    Width={Mobi() ? 90 : 21.5}
+                    Height={18} 
+                    Items={this.state.SeeAlsos}
+                    />
 
             </div>
         );
@@ -303,13 +390,15 @@ let Styles = ({
 
     textAreaContainer: {
         position: "absolute",
-        top: "15%",
+        top: Mobi() ? '105%' : '15%',
         left: Mobi() ? '0%' : "10%",
-        width: Mobi() ? '100%' : '45%',
+        width: Mobi() ? '100%' : '21%',
         display: 'flex',
+        flexDirection: 'column',
         flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignItems: 'center'
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start'
+
     },
     DropMenu: {
         width: "70%"
@@ -326,9 +415,9 @@ let Styles = ({
     },
     DescriptionBox: {
         position: 'absolute',
-        top: '55%',
-        left: '10%',
-        width: '21.5%',
+        top: Mobi() ? '190%' : '55%',
+        left: Mobi() ? '4%' : '10%',
+        width: Mobi() ? '90%' : '21.5%',
         height: '24%',
         font: 'italic 16px times new roman',
         display: 'flex',

@@ -12,6 +12,7 @@ export default class Update extends React.Component {
             Info: []
         }
         this.Data = []
+        this.SuperString = ``
     }
 
     componentDidMount = async () => {
@@ -23,16 +24,62 @@ export default class Update extends React.Component {
             this.Data.push(JSN)
         })
 
-        this.setState({ Info: this.Data })
-        this.Data = []; Info = []
-        // console.clear()
+        // this.setState({ Info: this.Data })
+        
+
+        console.clear()
+        this.prepString(this.Data)
+
+    }
+
+    // (( (Array) ((item - num) + num) fact ))           
+
+   //  (( (Array) ($.Age <= arr2[n]) ? => Kids:[] ))           
+
+    prepString = (Info) => {
+        let count = 1;
+        Info.forEach(item => {
+            this.onEntry(item, count)
+            count++
+        })
+
+        this.Download(this.SuperString)
+
+    }
+
+    onEntry = (Item , count) => {
+
+        this.SuperString += `#${count}\n${Item.RestrictCode ? `-${Item.RestrictCode} ` : '' }`
+        Item.KeyWords !== undefined &&
+        Item.KeyWords !== 'undefined' && 
+        Item.KeyWords.map((K)=>{  this.SuperString += K + ' '  })
+        this.SuperString += '\n'
+        Item.Syntax !== undefined &&
+        Item.Syntax !== 'undefined' && 
+        Item.Syntax.map((S)=>{  this.SuperString += 'Syntax: ' + S })
+        this.SuperString += '\n'
+        this.SuperString += Item.Description
+        this.SuperString += '\n'
+        this.SuperString += Item.SeeAlso = '\n \n'
+        console.log(this.SuperString)
+
+                
+    }
+
+    Download = (String) => {
+        alert("DOWN")
+        var link = document.createElement('a');
+        link.download = 'data.txt';
+        var blob = new Blob([String], { type: 'text/plain' });
+        link.href = window.URL.createObjectURL(blob);
+        link.click();
     }
 
     render() {
         return (
-            <div>
+            <>
                 <div>
-                    {this.state.Info.map(Item => {
+                   {this.state.Info.map(Item => {
                         console.log(JSON.stringify(Item))
                         return (
                             <div key={Math.random()} style={Styles.Item}>
@@ -103,7 +150,7 @@ export default class Update extends React.Component {
 
                     })}
                 </div>
-            </div>
+            </>
         );
     }
 }

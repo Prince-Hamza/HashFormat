@@ -83,10 +83,7 @@ export default class API extends Component {
                     </div>
 
                 </div>
-
-
-
-
+                
 
             </div>
         )

@@ -37,11 +37,8 @@
 #Btn3 { position: absolute; top: 20%; left: 70%; width: 8.3% }
 
 .Select {
-  width: 47%;
-  margin-right: 2%;
-  height:1%;
+  width: 100%;
   color:rgb(194, 152, 194);
-  margin-right: 5.3%;
 }
 
 .SlctAdmin {
@@ -75,7 +72,7 @@
 
 .mobiSelect{
   position: absolute;
-  left:-2%;
+  align-self: center;
   width: 90%;
 }
 

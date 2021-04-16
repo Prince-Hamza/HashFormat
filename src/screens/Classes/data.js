@@ -6945,6 +6945,7 @@ For more help on Clerics choices between Healer and Shaman classes, see
 
 #200
 -1 HEALER HEALERS~
+
 They avoid violence, except for their well-known crusades against forces
 
 of the undead.  Due to their devotion, they receive incredible powers from

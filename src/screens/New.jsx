@@ -19,13 +19,14 @@ export default class Container extends React.Component {
     }
 
     componentDidMount = () => {
-        // firebase.database().ref('/HashFormat/Entries').once('value', (resp) => {
-        //     let info = resp.val()
-        //     this.setState({ EntryNum: info.length })
-        // })
+
         this.scheme()
-      //let i = Parser.getInfoAll()
-    //   alert(JSON.stringify(i))
+       // let i = Parser.getInfo(47)
+        // alert((i))
+
+
+
+        
     }
 
     Update = () => {
@@ -52,19 +53,20 @@ export default class Container extends React.Component {
         // let EntryInfo = firebase.database().ref('/HashFormat/Entries/Info')
 
         info.forEach(item => {
-            
+
+            if (item.Class == undefined) item.Class = "undefined"
             if (item.Syntax == undefined) item.Syntax = "undefined"
             if (item.RestrictCode == undefined) item.RestrictCode = "undefined"
             if (item.Description == undefined) item.Description = "undefined"
             if (item.SeeAlso == undefined) item.SeeAlso = "undefined"
             if (item.SeeAlso == undefined) item.SeeAlso = "undefined"
 
-
             let random = this.getAbsRandom()
             let Entries = firebase.database().ref('/HashFormat/Entries/' + random)
 
             Entries.set({
-                KeyWords:item.KeyWords,
+                Class: item.Class,
+                KeyWords: item.KeyWords,
                 Id: random,
                 Syntax: item.Syntax,
                 RestrictCode: item.RestrictCode,
@@ -74,7 +76,7 @@ export default class Container extends React.Component {
 
         })
 
-alert("success")
+        alert("success")
 
 
     }

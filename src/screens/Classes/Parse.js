@@ -13,23 +13,27 @@ export class Parse {
 
     getInfo = (n) => {
         let Items = this.readItems()
-        let Jsn = this.getJSON(Items[n])
-        return Jsn
+        // let Jsn = this.getJSON(Items[n])
+        // return Jsn.KeyWords
+
+        let k = this.getKeyWords(Items[n])
+        return k
     }
 
-    
+
 
     getInfoAll = () => {
         var Total = []
         let Items = this.readItems()
         Items.forEach((Item) => {
-           let JSN = this.getJSON(Item)
-           Total.push(JSN)
+            let JSN = this.getJSON(Item)
+            Total.push(JSN)
         })
         return Total
     }
 
     getJSON = (Item) => {
+        let Class = this.getClass(Item)
         let KeyWords = this.getKeyWords(Item)
         let Syntax = this.readSyntax(Item)
         let Restrict = this.readRestriction(Item)
@@ -37,6 +41,7 @@ export class Parse {
         let SeeAlso = this.getSeeAlso(Item)
 
         let JSN = ({
+            Class: Class,
             KeyWords: KeyWords,
             RestrictCode: Restrict,
             Syntax: Syntax,
@@ -49,21 +54,39 @@ export class Parse {
     }
 
     getKeyWords = (item) => {
-        let Pass = item.substring(item.indexOf('\n') + 1 , item.length - 1)
-        let Section1 = Pass.substring(3,Pass.indexOf('\n') - 1)
-        let Pass2 = Pass.substring(Pass.indexOf('\n') + 1 , item.length - 1)
-        let Section2 = Pass2.substring(0,Pass2.indexOf('\n'))
-        let Final = Section2.includes('Syntax:') ? Section1 : Section2;
-        let KeyWords = Section1 + Section2
-        if (Final.includes('Syntax:')) alert(Final)
-        console.log(Final.split(' '))
-        return Final.split(' ')
 
-        //let WordsArray = Section2.split(" ")
-        //  if (Section2.includes('Syntax:')) alert(Section2)
-        //alert(item)
-        //return WordsArray
+        let Para = item.substring(item.indexOf('\n') + 1, item.length - 1)
+
+        let Line = Para.substring(3, Para.indexOf('\n') - 1)
+
+        if (!Line.includes('~')) {
+
+            if (Line.includes(' ')) { return Line.split(' ') } else return [Line]
+
+        } else if (Line.includes(`~`)) {
+            let Keys = Line.split(`~`)[1]
+            let Class = Line.split('~')[0]
+            if (Keys.includes(' ')) { return Keys.split(' ') } else return [Keys]
+        }
+
     }
+
+
+    getClass = (item) => {
+
+        let Para = item.substring(item.indexOf('\n') + 1, item.length - 1)
+        let Line = Para.substring(3, Para.indexOf('\n') - 1)
+
+        if (Line.includes(`~`)) {
+            let Keys = Line.split(`~`)[1]
+            let Class = Line.split('~')[0]
+            if (Class.includes(' ')) {return Class.split(' ') } else return [Class]
+        }
+
+        return 'undefined'
+
+    }
+
 
     getSeeAlso = (item) => {
         let SA = []
