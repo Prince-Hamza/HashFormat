@@ -52,11 +52,11 @@ export default class Update extends React.Component {
         this.SuperString += `#${count}\n${Item.RestrictCode ? `-${Item.RestrictCode} ` : '' }`
         Item.KeyWords !== undefined &&
         Item.KeyWords !== 'undefined' && 
-        Item.KeyWords.map((K)=>{  this.SuperString += K + ' '  })
+        Item.KeyWords.forEach((K)=>{  this.SuperString += K + ' '  })
         this.SuperString += '\n'
         Item.Syntax !== undefined &&
         Item.Syntax !== 'undefined' && 
-        Item.Syntax.map((S)=>{  this.SuperString += 'Syntax: ' + S })
+        Item.Syntax.forEach((S)=>{  this.SuperString += 'Syntax: ' + S })
         this.SuperString += '\n'
         this.SuperString += Item.Description
         this.SuperString += '\n'

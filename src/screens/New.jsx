@@ -20,13 +20,13 @@ export default class Container extends React.Component {
 
     componentDidMount = () => {
 
-        this.scheme()
-       // let i = Parser.getInfo(47)
+        // this.scheme()
+       // let i = Parser.getInfoAll()
         // alert((i))
 
 
 
-        
+
     }
 
     Update = () => {

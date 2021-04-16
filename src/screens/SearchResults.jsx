@@ -3,10 +3,12 @@ import '../App.css'
 
 export default class SearchResults extends React.Component {
 
-    Insert = (Item) => {
+    Insert = (Info , Word) => {
         //  alert(JSON.stringify(Item))
-        let x = this.props.addToOptions ? this.props.addToOptions : this.props.Alert
-        x(Item)
+        // let x = this.props.addToOptions ? this.props.addToOptions : this.props.Alert;
+        // alert(JSON.stringify(Info))
+
+        this.props.addToOptions(Info , Word)
 
         //    if (this.props.addToOptions) {
         //        this.props.addToOptions(Item)
@@ -35,7 +37,7 @@ export default class SearchResults extends React.Component {
 
                             <div key={Math.random()} style={Styles.Item}>
 
-                                <div id="respItem" onClick={() => { this.Insert(Item) }}> {Item.KeyWord} </div>
+                                <div id="respItem" onClick={() => { this.Insert(Item.Info, Item.KeyWord) }}> {Item.KeyWord} </div>
 
                             </div>
                         )

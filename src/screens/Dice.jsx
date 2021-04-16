@@ -20,11 +20,12 @@ export default class Dice extends React.Component {
             Info: [],
             SearchResults: [],
             Options: [],
-            Menu: [{ value: 1, label: "Everyone" }],
+            Menu: [{ value: 1, label: "Everyone" }, { label: 'Class' }],
             currentObject: [],
             Syntax: [],
             KeyWords: [],
             SeeAlsos: [],
+            Class: ['Level Restriction'],
             EntryName: '',
             Description: "",
             newKey: '',
@@ -44,8 +45,8 @@ export default class Dice extends React.Component {
 
         Info.forEach((Obj) => {
             let Item = Obj.val()
+             if (!Array.isArray(Item.KeyWords)) Item.KeyWords = [Item.KeyWords]
             Item.KeyWords.forEach((Word) => {
-
                 let neobj = {
                     KeyWord: Word,
                     Info: Item
@@ -55,11 +56,11 @@ export default class Dice extends React.Component {
             // this.Data.push(JSN)
         })
 
-        // alert( JSON.stringify(this.KeyWordsArray[3]))
+        //  alert( JSON.stringify(this.KeyWordsArray[3]))
+         this.setState({ Info: this.KeyWordsArray })
+         this.setState({ SearchResults: this.KeyWordsArray })
 
-
-        this.setState({ Info: this.KeyWordsArray })
-        Info = []
+        //  Info = []
     }
 
     PreSet = () => {
@@ -81,10 +82,11 @@ export default class Dice extends React.Component {
     }
 
     AutoComplete = (value) => {
-        // @Info |item| (Item:string()) & ((Item.Syntax !== Nil)) @Item.Syntax |Sx| ((Sx != Nil))  ((Synx(0,val.length))) 
+        // @ Info |item| (Item:string()) & ((Item.Syntax !== Nil)) @Item.Syntax |Sx| ((Sx != Nil))  ((Synx(0,val.length)) ) 
+
 
         this.state.Info.forEach((Item) => {
-            console.log(JSON.stringify(Item))
+            // console.log(JSON.stringify(Item))
             if (Item.KeyWord !== "undefined" && Item.KeyWord !== undefined) {
                 // Item.KeyW.forEach((Synx) => {
                 // if (Synx !== "undefined" && Synx !== undefined) {
@@ -93,28 +95,36 @@ export default class Dice extends React.Component {
                         KeyWord: Item.KeyWord,
                         Info: Item
                     }
-                    console.log(neobj)
+                    // console.log(neobj)
                     this.Resp.push(neobj)
                 }
                 //}
                 // })
-                this.setState({ Info: this.Resp })
+                this.setState({ SearchResults: this.Resp })
             }
         })
         this.Resp = []
-        if (value == "") this.setState({ Info: [] })
+        if (value == "") this.setState({ SearchResults: [] })
     }
 
 
 
 
-    InsertOption = (Obj) => {
+    InsertOption = (Obj , Word) => {
+
+        // alert(JSON.stringify(Obj.Info))
+
+        // alert(JSON.stringify(this.state.currentObject))
+
+
         this.setState({
-            EntryName: Obj.KeyWord,
+            EntryName: Word,
             currentObject: Obj.Info,
             Options: Obj.Info.Syntax,
             KeyWords: Obj.Info.KeyWords,
-            SeeAlsos: Obj.Info.SeeAlso
+            SeeAlsos: Obj.Info.SeeAlso,
+            Class: Obj.Info.Class,
+            Description:Obj.Info.Description
         })
     }
 
@@ -140,8 +150,7 @@ export default class Dice extends React.Component {
             this.state.currentObject.Name = this.state.EntryName
             // alert(JSON.stringify(this.state.currentObject))
             this.setState({ currentObject: this.state.currentObject })
-            this.setState({ Syntax: paramList })
-            alert(this.state.newSyntax)
+            this.setState({ Options: paramList })
         }
         // alert(JSON.stringify(paramList))
 
@@ -160,9 +169,9 @@ export default class Dice extends React.Component {
 
     }
 
-    
+
     AddSeeAlso = (paramList) => {
-        
+
         if (!Array.isArray(paramList)) paramList = []
         if (Array.isArray(paramList)) {
             paramList.push(this.state.newSA)
@@ -191,7 +200,6 @@ export default class Dice extends React.Component {
     }
 
     SetSyntaxValue = (value) => {
-        alert(value)
         this.setState({ newSyntax: value })
     }
 
@@ -237,7 +245,7 @@ export default class Dice extends React.Component {
                             ...Styles.Heading, width: '90%', marginTop: '7%', alignSelf: 'flex-start',
                             justifyContent: 'flex-start'
                         }}
-                        > Level Restrictions </div>
+                        >  {this.state.Class ? this.state.Class : 'Level Restrict' }  </div>
 
 
                         <LevelRestrict
@@ -282,13 +290,13 @@ export default class Dice extends React.Component {
                         Left={this.Mobi() ? 3 : 34}
                         Width={this.Mobi() ? 90 : 21.5}
                         Height={18}
-                        Items={this.state.Syntax} Slice={this.Slice}
+                        Items={this.state.Options} Slice={this.Slice}
                         ArrayName={'Options'}
                     />
 
 
 
-                    <textarea type="text" style={Styles.DescriptionBox} value={this.state.currentObject.Description} />
+                    <textarea type="text" style={Styles.DescriptionBox} value={this.state.Description} />
 
 
                 </div>
@@ -306,7 +314,7 @@ export default class Dice extends React.Component {
                         Left={this.Mobi() ? 10 : 60}
                         Width={this.Mobi() ? 80 : 18}
                         Height={this.Mobi() ? 60 : 50}
-                        Items={this.state.Info}
+                        Items={this.state.SearchResults}
                         addToOptions={this.InsertOption}
                     />
 
@@ -343,9 +351,9 @@ export default class Dice extends React.Component {
                     Top={Mobi() ? 230 : 61.5}
                     Left={Mobi() ? 2 : 33.5}
                     Width={Mobi() ? 90 : 21.5}
-                    Height={18} 
+                    Height={18}
                     Items={this.state.SeeAlsos}
-                    />
+                />
 
             </div>
         );

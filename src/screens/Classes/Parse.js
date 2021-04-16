@@ -16,8 +16,8 @@ export class Parse {
         // let Jsn = this.getJSON(Items[n])
         // return Jsn.KeyWords
 
-        let k = this.getKeyWords(Items[n])
-        return k
+       // this.getClass(Items[n])
+        // return k
     }
 
 
@@ -26,8 +26,9 @@ export class Parse {
         var Total = []
         let Items = this.readItems()
         Items.forEach((Item) => {
-            let JSN = this.getJSON(Item)
-            Total.push(JSN)
+             let JSN = this.getJSON(Item)
+             Total.push(JSN)
+            //this.getKeyWords(Item)
         })
         return Total
     }
@@ -59,15 +60,27 @@ export class Parse {
 
         let Line = Para.substring(3, Para.indexOf('\n') - 1)
 
+
         if (!Line.includes('~')) {
 
             if (Line.includes(' ')) { return Line.split(' ') } else return [Line]
 
         } else if (Line.includes(`~`)) {
+
             let Keys = Line.split(`~`)[1]
             let Class = Line.split('~')[0]
-            if (Keys.includes(' ')) { return Keys.split(' ') } else return [Keys]
+
+            if (Keys.substring(0, 1) == ' ') Keys = Keys.substring(1, Keys.length - 1)
+            
+            if (Keys.substring(0, 1) == `'`) Keys = Keys.substring(1, Keys.length);
+            
+            // if (Keys.includes('DUP')) alert(Keys)
+
+            return Keys
+
         }
+
+        return "undefined"
 
     }
 
@@ -77,11 +90,19 @@ export class Parse {
         let Para = item.substring(item.indexOf('\n') + 1, item.length - 1)
         let Line = Para.substring(3, Para.indexOf('\n') - 1)
 
+
         if (Line.includes(`~`)) {
+
             let Keys = Line.split(`~`)[1]
             let Class = Line.split('~')[0]
-            if (Class.includes(' ')) {return Class.split(' ') } else return [Class]
+
+
+            if (Class.substring(0, 1) == ' ') { Class = Class.substring(1, Keys.length - 1) }
+            if (Class.substring(0, 1) == `'`) { Class = Class.substring(1, Keys.length - 1) }
+
+            if (Class) { return Class }
         }
+
 
         return 'undefined'
 

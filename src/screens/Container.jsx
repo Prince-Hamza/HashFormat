@@ -35,7 +35,7 @@ export default class Container extends React.Component {
                     style={{
                         ...Styles.Container,
                         left: this.props.Left + "%",
-                        top:this.props.Top + '%' ,
+                        top: this.props.Top + '%',
                         width: this.props.Width + '%',
                         height: this.props.Height + "%"
                     }}
@@ -50,9 +50,12 @@ export default class Container extends React.Component {
                                     <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}
                                         id="respItem" onClick={() => { this.Insert(Item) }}>
 
-                                        <div style={{ width: '150px' }} >  {Item}    </div>
-
-                                        <img 
+                                        {Item != '' &&
+                                            <div
+                                                style={{ width: '150px' , marginLeft:'20%' }} >
+                                                {Item}
+                                            </div>}
+                                        {/* <img 
                                         src = {"https://im4.ezgif.com/tmp/ezgif-4-067dcb8275b5.png"}
                                         style={{ width: '20px',height:'20px' , marginLeft: 'auto'  }} 
                                         onClick={() => {
@@ -60,7 +63,7 @@ export default class Container extends React.Component {
                                             this.props.Slice(this.props.ArrayName, this.props.Items)
                                         }}
                                         
-                                        /> 
+                                        />  */}
 
 
                                     </div>
@@ -98,7 +101,8 @@ let Styles = ({
         borderColor: "black",
         display: 'flex',
         alignItems: 'center', /* Vertical */
-        justifyContent: 'flex-start', /* Horizontal */
+        justifyContent: 'center', /* Horizontal */
+        overflow: 'hidden'
 
     }
 

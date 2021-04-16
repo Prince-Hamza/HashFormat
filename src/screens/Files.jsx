@@ -1,15 +1,17 @@
 import React from 'react';
 import Select from 'react-select'
 import { Parse } from './Classes/Parse'
-import Pending from './Pending'
+import SearchResults from './SearchResults'
 import Container from './Container'
+import TitleKeyWord from './TitleKeyWord'
 import { firebaseApi } from '../components/Features/Firebase'
 import '../App.css'
+import LevelRestrict from './LevelRestrict';
 
 const Fire = new firebaseApi()
 const Parser = new Parse('file:///D:/Software/React/web/infobase/src/screens/Classes/data.txt')
 
-export default class Files extends React.Component {
+export default class Dice extends React.Component {
 
 
     constructor() {
@@ -20,8 +22,11 @@ export default class Files extends React.Component {
             Options: [],
             Menu: [{ value: 1, label: "Everyone" }],
             currentObject: [],
+            Syntax: [],
             KeyWords: [],
             SeeAlsos: [],
+            Class: ['Level Restriction'],
+            EntryName: '',
             Description: "",
             newKey: '',
             newSyntax: '',
@@ -30,24 +35,29 @@ export default class Files extends React.Component {
         this.Data = []
         this.Resp = []
         this.Opts = []
-        this.KeyWordsArray=[]
+        this.KeyWordsArray = []
     }
 
     componentDidMount = async () => {
-        let Info = await Fire.Once('Pending')
+        //  let info = Parser.readTextFile()
 
-        Info.forEach((Item) => {
-            let Data = Item.val()
+        let Info = await Fire.Once('/HashFormat/Entries')
+
+        Info.forEach((Obj) => {
+            let Item = Obj.val()
+            Item.KeyWords.forEach((Word) => {
+
                 let neobj = {
-                    Name: Data.Name,
-                    Info: Data
+                    KeyWord: Word,
+                    Info: Item
                 }
                 this.KeyWordsArray.push(neobj)
-
-
+            })
+            // this.Data.push(JSN)
         })
 
-        // alert(this.KeyWordsArray[0].Name)
+        // alert( JSON.stringify(this.KeyWordsArray[3]))
+
 
         this.setState({ Info: this.KeyWordsArray })
         Info = []
@@ -60,6 +70,7 @@ export default class Files extends React.Component {
                     Syntax: Item.Syntax,
                     Info: Item
                 }
+
                 console.log(neobj)
                 this.Resp.push(neobj)
 
@@ -75,24 +86,24 @@ export default class Files extends React.Component {
 
         this.state.Info.forEach((Item) => {
             console.log(JSON.stringify(Item))
-            if (Item.Syntax !== "undefined" && Item.Syntax !== undefined) {
-                Item.Syntax.forEach((Synx) => {
-                    if (Synx !== "undefined" && Synx !== undefined) {
-                        if (Synx.substring(0, value.length) == value) {
-                            let neobj = {
-                                Syntax: Synx,
-                                Info: Item
-                            }
-                            console.log(neobj)
-                            this.Resp.push(neobj)
-                        }
+            if (Item.KeyWord !== "undefined" && Item.KeyWord !== undefined) {
+                // Item.KeyW.forEach((Synx) => {
+                // if (Synx !== "undefined" && Synx !== undefined) {
+                if (Item.KeyWord.substring(0, value.length) == value) {
+                    let neobj = {
+                        KeyWord: Item.KeyWord,
+                        Info: Item
                     }
-                })
-                this.setState({ SearchResults: this.Resp })
+                    console.log(neobj)
+                    this.Resp.push(neobj)
+                }
+                //}
+                // })
+                this.setState({ Info: this.Resp })
             }
         })
-        this.Resp = []
-        if (value == "") this.setState({ SearchResults: [] })
+        // this.Resp = []
+        // if (value == "") this.setState({ Info: [] })
     }
 
 
@@ -100,10 +111,12 @@ export default class Files extends React.Component {
 
     InsertOption = (Obj) => {
         this.setState({
+            EntryName: Obj.KeyWord,
             currentObject: Obj.Info,
             Options: Obj.Info.Syntax,
             KeyWords: Obj.Info.KeyWords,
-            SeeAlsos: Obj.Info.SeeAlso
+            SeeAlsos: Obj.Info.SeeAlso,
+            Class: Obj.Class
         })
     }
 
@@ -112,20 +125,54 @@ export default class Files extends React.Component {
     }
 
     Save = () => {
-        Fire.Set(`HashFormat/Entries/${this.state.currentObject.Id}`, this.state.currentObject)
-        alert("Update Successful")
+        Fire.Set(`Pending/${this.state.currentObject.Id}`, this.state.currentObject)
+    }
+
+    AddSyntax = (paramList) => {
+
+        // alert(paramList)
+
+        // alert(this.state.newSyntax)
+
+        if (!Array.isArray(paramList)) paramList = []
+
+
+        if (Array.isArray(paramList)) {
+            paramList.push(this.state.newSyntax)
+            this.state.currentObject.Name = this.state.EntryName
+            // alert(JSON.stringify(this.state.currentObject))
+            this.setState({ currentObject: this.state.currentObject })
+            this.setState({ Syntax: paramList })
+            alert(this.state.newSyntax)
+        }
+        // alert(JSON.stringify(paramList))
 
     }
 
-    addSyntax = (paramList, State, Value) => {
+    AddKeyWord = (paramList) => {
 
         if (Array.isArray(paramList)) {
-            paramList.push(Value)
+            paramList.push(this.state.newKey)
+            this.state.currentObject.Name = this.state.EntryName
+            // alert(JSON.stringify(this.state.currentObject))
             this.setState({ currentObject: this.state.currentObject })
-            this.setState({ [State]: paramList })
-
+            this.setState({ KeyWords: paramList })
         }
         // alert(JSON.stringify(paramList))
+
+    }
+
+
+    AddSeeAlso = (paramList) => {
+
+        if (!Array.isArray(paramList)) paramList = []
+        if (Array.isArray(paramList)) {
+            paramList.push(this.state.newSA)
+            this.state.currentObject.Name = this.state.EntryName
+            this.setState({ currentObject: this.state.currentObject })
+            this.setState({ SeeAlsos: paramList })
+            // alert(this.state.newSyntax)
+        }
 
     }
 
@@ -145,69 +192,111 @@ export default class Files extends React.Component {
 
     }
 
+    SetSyntaxValue = (value) => {
+        alert(value)
+        this.setState({ newSyntax: value })
+    }
+
+    SetKeyValue = (value) => {
+        this.setState({ newKey: value })
+    }
+
+    SetSeeAlsoValue = (value) => {
+        this.setState({ SeeAlso: value })
+    }
 
     render() {
         return (
             <div style={Styles.Main}>
 
 
-                {/* <div style={Styles.OverLayer} >
-                    <input />
-                    <button style = {Styles.Button}></button>
-                </div>
-                */}
+                {/* <div className="mobiHeader">
+<div className="Title" style={Styles.Title} >Entry name</div>
+<button onClick={() => { this.Save() }} className="Button" id="Btn1" > Approve </button>
+<button className="Button" id="Btn2" style={{ ...Styles.Button }} > Deny </button>
+</div>
 
-                <div className="mobiHeader">
-                    <div className="Title" style={Styles.Title} >Entry name</div>
-                    <button onClick={() => { this.Save() }} className="Button" id="Btn1" > Approve </button>
-                    <button className="Button" id="Btn2" style={{ ...Styles.Button }} > Deny </button>
-                </div>
+ */}
+
+
 
 
 
                 <div>
-                    <div style={{
-                        ...Styles.textAreaContainer,
-                        width: this.Mobi() ? '100%' : '45%', top: this.Mobi() ? '105%' : '15%'
-                    }}
-                    >
-
+                    <div style={Styles.textAreaContainer} >
 
                         <Select options={this.state.Menu} className={this.Mobi() ? "mobiSelect" : "Select"} />
 
-
-                        <div style={{ ...Styles.Heading, marginRight: '4.2%' }} >   Level Restrictions  </div>
-
-                        <input style={{ ...Styles.Heading, marginLeft: '0%', marginTop: '2%', marginRight: "0.5%" }}
-                            placeholder='New Keyword' onChange={(e) => { this.setState({ newKey: e.target.value }) }} />
-
-                        <img
-                            onClick={() => { this.addSyntax(this.state.currentObject.KeyWords, this.state['KeyWords'], this.state.newKey) }}
-                            style={Styles.plusImage} alt="void" width="25px" height="25px"
-                            src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
-
-
-                        <input style={{ ...Styles.Heading, width: '40%', marginLeft: '2%', marginTop: '2%' }}
-                            placeholder={"New Syntax"} onChange={(e) => { this.setState({ newSyntax: e.target.value }) }} />
-
-
-                        <img onClick={() => { this.addSyntax(this.state.currentObject.Syntax, this.state['Options'], this.state.newSyntax) }} style={Styles.plusImage} alt="void" width="25px" height="25px"
-                            src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
-
-
+                        <TitleKeyWord
+                            SetValue={this.SetKeyValue}
+                            currentObject={this.state.currentObject}
+                            AddKeyWord={this.AddKeyWord}
+                        />
 
                     </div>
 
 
 
-                    <Container Top={30} Left={10} Width={21.5} Height={18} Items={this.state.KeyWords} Slice={this.Slice}
+
+
+
+
+
+
+
+
+                    <div style={{ ...Styles.textAreaContainer, left: Mobi() ? '0%' : '34%', top: Mobi() ? '145%' : '13%' }} >
+
+                        <div style={{
+                            ...Styles.Heading, width: '90%', marginTop: '7%', alignSelf: 'flex-start',
+                            justifyContent: 'flex-start'
+                        }}
+                        > {this.state.Class !== 'undefined' ? this.state.Class[0] : 'Level Restrictions'} </div>
+
+
+                        <LevelRestrict
+                            AddSyntax={this.AddSyntax}
+                            SetValue={this.SetSyntaxValue}
+                            currentObject={this.state.currentObject}
+                        />
+
+                    </div>
+
+
+                    {/* <div style={{ ...Styles.Heading, marginRight: '4.2%' }} >   Level Restrictions  </div>
+ 
+ 
+ <input style={{ ...Styles.Heading, width: '40%', marginLeft: '2%', marginTop: '2%' }}
+     placeholder={"New Syntax"} onChange={(e) => { this.setState({ newSyntax: e.target.value }) }} />
+ 
+ 
+ <img onClick={() => { this.addSyntax(this.state.currentObject.Syntax, this.state['Options'], this.state.newSyntax) }} style={Styles.plusImage} alt="void" width="25px" height="25px"
+     src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
+ 
+  */}
+
+
+
+
+
+                    <Container
+                        Top={this.Mobi() ? 120 : 30}
+                        Left={this.Mobi() ? 3 : 10}
+                        Width={this.Mobi() ? 90 : 21.5}
+                        Height={18}
+                        Items={this.state.KeyWords} Slice={this.Slice}
                         ArrayName={'KeyWords'}
                     />
 
 
 
 
-                    <Container Top={30} Left={33.5} Width={21.5} Height={18} Items={this.state.Options} Slice={this.Slice}
+                    <Container
+                        Top={this.Mobi() ? 165 : 30}
+                        Left={this.Mobi() ? 3 : 34}
+                        Width={this.Mobi() ? 90 : 21.5}
+                        Height={18}
+                        Items={this.state.Syntax} Slice={this.Slice}
                         ArrayName={'Options'}
                     />
 
@@ -221,10 +310,15 @@ export default class Files extends React.Component {
 
                 <div className="mobiSearch" >
 
-                    <Pending
-                        Top={16.5}
+                    <input id="Search" placeholder="Search" onChange={(e) => { this.AutoComplete(e.target.value) }} />
+
+                    <button className="Button" id="Btn3"  >New Entry</button>
+
+
+                    <SearchResults
+                        Top={this.Mobi() ? 20 : 30}
                         Left={this.Mobi() ? 10 : 60}
-                        Width={this.Mobi() ? 83 : 18}
+                        Width={this.Mobi() ? 80 : 18}
                         Height={this.Mobi() ? 60 : 50}
                         Items={this.state.Info}
                         addToOptions={this.InsertOption}
@@ -233,21 +327,39 @@ export default class Files extends React.Component {
                 </div>
 
 
-                <Container id="SASearch" Top={61.5} Left={33.5} Width={21.5} Height={18} Items={this.state.SeeAlsos} />
 
-                <input style={{ ...Styles.Heading, width: '18%', position: 'absolute', top: "55%", left: '31.5%', marginLeft: '2%' }}
+                <input style={{
+                    ...Styles.Heading,
+                    position: 'absolute',
+                    width: Mobi() ? '80%' : '18%',
+                    top: Mobi() ? '220%' : "55%",
+                    left: Mobi() ? '0%' : '31.5%',
+                    marginLeft: '2%'
+                }}
                     onChange={(e) => { this.setState({ newSA: e.target.value }) }}
                     placeholder={"Search"} />
 
 
                 <img id="Plus"
-                    onClick={() => { this.addSyntax(this.state.currentObject.SeeAlso, this.state['SeeAlsos'], this.state.newSA) }}
+                    onClick={() => { this.AddSeeAlso(this.state.currentObject.SeeAlso) }}
 
-                    style={{ ...Styles.plusImage, position: 'absolute', left: '53.5%', top: '52%' }}
+                    style={{
+                        ...Styles.plusImage,
+                        position: 'absolute',
+                        left: Mobi() ? '89%' : '53.5%',
+                        top: Mobi() ? '219.5%' : '52%'
+                    }}
                     alt="void" width="25px" height="25px"
                     src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
 
 
+                <Container id="SASearch"
+                    Top={Mobi() ? 230 : 61.5}
+                    Left={Mobi() ? 2 : 33.5}
+                    Width={Mobi() ? 90 : 21.5}
+                    Height={18}
+                    Items={this.state.SeeAlsos}
+                />
 
             </div>
         );
@@ -256,11 +368,19 @@ export default class Files extends React.Component {
 
 
 
+
+const Mobi = () => {
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    return isMobile;
+}
+
+
+
 let Styles = ({
 
     Main: {
         position: "absolute",
-        top: '5%',
+        top: '0%',
         left: '0%',
         width: "100%",
         height: '100%',
@@ -284,13 +404,15 @@ let Styles = ({
 
     textAreaContainer: {
         position: "absolute",
-        top: "15%",
-        left: "10%",
-        width: '45%',
+        top: Mobi() ? '105%' : '15%',
+        left: Mobi() ? '0%' : "10%",
+        width: Mobi() ? '100%' : '21%',
         display: 'flex',
+        flexDirection: 'column',
         flexWrap: 'wrap',
-        justifyContent: 'space-evenly',
-        alignItems: 'center'
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start'
+
     },
     DropMenu: {
         width: "70%"
@@ -307,9 +429,9 @@ let Styles = ({
     },
     DescriptionBox: {
         position: 'absolute',
-        top: '55%',
-        left: '10%',
-        width: '21.5%',
+        top: Mobi() ? '190%' : '55%',
+        left: Mobi() ? '4%' : '10%',
+        width: Mobi() ? '90%' : '21.5%',
         height: '24%',
         font: 'italic 16px times new roman',
         display: 'flex',
@@ -323,8 +445,8 @@ let Styles = ({
         width: '42%',
         height: '18px',
         font: '12px tmes new roman',
-        justifyContent: 'center',
-        alignItems: 'center'
+        justifyContent: Mobi() ? 'flex-start' : 'center',
+        alignItems: Mobi() ? 'flex-start' : 'center',
     },
     plusImage: {
         marginTop: '1.5%',

@@ -16,7 +16,7 @@ export default class API extends Component {
 
         let resp = await Api.readFirebase('Pending')
 
-        alert(resp.Stringify())
+        // alert(resp.Stringify())
     }
 
     Download = () => {
@@ -78,7 +78,7 @@ export default class API extends Component {
                     </div>
 
                     <div style={{ ...Verstyle.ItemView, flexDirection: 'row' }} >
-                        <input />
+                        <input value = 'localhost:3000/update' />
                         <button style={Verstyle.Button} onClick={() => { this.Download() }} > Download </button>
                     </div>
 
