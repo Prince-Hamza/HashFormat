@@ -36,7 +36,7 @@ export class SpreadSheetApi {
         params: { Method:'Email' , Email: emailAddress, Message: Message, Subject: Subject },
       })
       .then((res) => {
-        alert("Success")
+        alert("Email Sent Successfully")
         // let info = res.data;
         // var myObj = JSON.parse(res.data);
 

@@ -41,12 +41,12 @@ export default class Dice extends React.Component {
     componentDidMount = async () => {
         //  let info = Parser.readTextFile()
 
-        let Info = await Fire.Once('/HashFormat/Entries')
+        let Info = await Fire.Once('Pending')
 
         Info.forEach((Obj) => {
             let Item = Obj.val()
+            Item.KeyWords = Array.isArray(Item.KeyWords) ? Item.KeyWords : [Item.KeyWords]
             Item.KeyWords.forEach((Word) => {
-
                 let neobj = {
                     KeyWord: Word,
                     Info: Item
@@ -109,13 +109,13 @@ export default class Dice extends React.Component {
 
 
 
-    InsertOption = (Obj) => {
+    InsertOption = (Obj , Word) => {
         this.setState({
-            EntryName: Obj.KeyWord,
-            currentObject: Obj.Info,
-            Options: Obj.Info.Syntax,
-            KeyWords: Obj.Info.KeyWords,
-            SeeAlsos: Obj.Info.SeeAlso,
+            EntryName: Word,
+            currentObject: Obj,
+            Options: Obj.Syntax,
+            KeyWords: Obj.KeyWords,
+            SeeAlsos: Obj.SeeAlso,
             Class: Obj.Class
         })
     }
@@ -210,15 +210,11 @@ export default class Dice extends React.Component {
             <div style={Styles.Main}>
 
 
-                {/* <div className="mobiHeader">
-<div className="Title" style={Styles.Title} >Entry name</div>
-<button onClick={() => { this.Save() }} className="Button" id="Btn1" > Approve </button>
-<button className="Button" id="Btn2" style={{ ...Styles.Button }} > Deny </button>
-</div>
-
- */}
-
-
+                <div className="mobiHeader">
+                    <div className="Title" style={Styles.Title} > {this.state.EntryName} </div>
+                    <button onClick={() => { this.Save() }} className="Button" id="Btn1" > Approve </button>
+                    <button className="Button" id="Btn2" style={{ ...Styles.Button }} > Deny </button>
+                </div>
 
 
 
@@ -251,7 +247,7 @@ export default class Dice extends React.Component {
                             ...Styles.Heading, width: '90%', marginTop: '7%', alignSelf: 'flex-start',
                             justifyContent: 'flex-start'
                         }}
-                        > {this.state.Class !== 'undefined' ? this.state.Class[0] : 'Level Restrictions'} </div>
+                        > {this.state.Class !== 'undefined' ? this.state.Class : 'Level Restrictions'} </div>
 
 
                         <LevelRestrict
@@ -380,7 +376,7 @@ let Styles = ({
 
     Main: {
         position: "absolute",
-        top: '0%',
+        top: '5%',
         left: '0%',
         width: "100%",
         height: '100%',

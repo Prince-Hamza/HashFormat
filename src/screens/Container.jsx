@@ -42,31 +42,29 @@ export default class Container extends React.Component {
 
                 >
                     {typeof (this.props.Items) == 'object' &&
-                        this.props.Items.map((Item, index) => {
+                        this.props.Items.map((Item,index) => {
                             return (
 
                                 <div key={Math.random()} style={Styles.Item}>
 
-                                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}
-                                        id="respItem" onClick={() => { this.Insert(Item) }}>
+                                    {Item != '' &&
+                                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }} id="respItem" onClick={() => { this.Insert(Item) }}>
 
-                                        {Item != '' &&
-                                            <div
-                                                style={{ width: '150px' , marginLeft:'20%' }} >
-                                                {Item}
-                                            </div>}
-                                        {/* <img 
-                                        src = {"https://im4.ezgif.com/tmp/ezgif-4-067dcb8275b5.png"}
-                                        style={{ width: '20px',height:'20px' , marginLeft: 'auto'  }} 
+                                            {Item}
+
+                                        </div>
+
+
+                                    }
+
+                                    <img
+                                        src={'https://png.pngtree.com/png-vector/20190419/ourmid/pngtree-vector-minus-icon-png-image_956426.jpg'}
+                                        style={{ width: '20px', height: '20px', marginLeft: 'auto' , marginRight:'15px' }}
                                         onClick={() => {
                                             this.props.Items.splice(index, 1)
                                             this.props.Slice(this.props.ArrayName, this.props.Items)
                                         }}
-                                        
-                                        />  */}
-
-
-                                    </div>
+                                    />
 
                                 </div>
                             )

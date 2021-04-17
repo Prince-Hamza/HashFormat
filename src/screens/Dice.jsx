@@ -45,20 +45,22 @@ export default class Dice extends React.Component {
 
         Info.forEach((Obj) => {
             let Item = Obj.val()
-             if (!Array.isArray(Item.KeyWords)) Item.KeyWords = [Item.KeyWords]
+            if (!Array.isArray(Item.KeyWords)) Item.KeyWords = [Item.KeyWords]
             Item.KeyWords.forEach((Word) => {
-                let neobj = {
-                    KeyWord: Word,
-                    Info: Item
-                }
+                if (!Word.includes('3') && !Word.includes('8')){
+                    let neobj = {
+                        KeyWord: Word,
+                        Info: Item
+                    }
                 this.KeyWordsArray.push(neobj)
+                }
             })
             // this.Data.push(JSN)
         })
 
         //  alert( JSON.stringify(this.KeyWordsArray[3]))
-         this.setState({ Info: this.KeyWordsArray })
-         this.setState({ SearchResults: this.KeyWordsArray })
+        this.setState({ Info: this.KeyWordsArray })
+        this.setState({ SearchResults: this.KeyWordsArray })
 
         //  Info = []
     }
@@ -110,21 +112,23 @@ export default class Dice extends React.Component {
 
 
 
-    InsertOption = (Obj , Word) => {
+    InsertOption = (Info, Word) => {
 
         // alert(JSON.stringify(Obj.Info))
 
         // alert(JSON.stringify(this.state.currentObject))
 
+        Info.Name = Word
+
 
         this.setState({
             EntryName: Word,
-            currentObject: Obj.Info,
-            Options: Obj.Info.Syntax,
-            KeyWords: Obj.Info.KeyWords,
-            SeeAlsos: Obj.Info.SeeAlso,
-            Class: Obj.Info.Class,
-            Description:Obj.Info.Description
+            currentObject: Info,
+            Options: [`cast 'ego whip' <target>`],
+            KeyWords: Info.KeyWords,
+            SeeAlsos: Info.SeeAlso,
+            Class: Info.Class,
+            Description: Info.Description
         })
     }
 
@@ -187,9 +191,21 @@ export default class Dice extends React.Component {
         this.setState({ [stateArray]: newArray })
         if (stateArray == 'KeyWords') this.state.currentObject.KeyWords = newArray
         if (stateArray == 'Syntax') this.state.currentObject.Syntax = newArray
+        if (stateArray == 'SeeAlsos') this.state.currentObject.SeeAlso = newArray
         this.setState({ currentObject: this.state.currentObject })
 
         this.Save()
+    }
+
+    Revert = () => {
+        if (this.state.KeyWords.length > 0) this.state.KeyWords.splice(this.state.KeyWords.length - 1, 1)
+        if (this.state.Options.length > 0) this.state.Options.splice(this.state.KeyWords.length - 1, 1)
+        if (Array.isArray(this.state.SeeAlsos)) this.state.SeeAlsos.splice(this.state.KeyWords.length - 1, 1)
+
+        this.Slice('KeyWords', this.state.KeyWords)
+        this.Slice('Options', this.state.Options)
+        this.Slice('SeeAlsos', this.state.SeeAlsos)
+
     }
 
     Mobi = () => {
@@ -211,6 +227,8 @@ export default class Dice extends React.Component {
         this.setState({ SeeAlso: value })
     }
 
+
+
     render() {
         return (
             <div style={Styles.Main}>
@@ -218,7 +236,9 @@ export default class Dice extends React.Component {
                 <div className="mobiHeader">
                     <div className="Title" style={Styles.Title} >  {this.state.EntryName}  </div>
                     <button onClick={() => { alert("Pending for Approval"); this.Save() }} className="Button" id="Btn1" > Save </button>
-                    <button className="Button" id="Btn2" style={{ ...Styles.Button }} > Revert </button>
+                    <button className="Button" id="Btn2" style={{ ...Styles.Button }} onClick={() => {
+                        this.Revert()
+                    }}> Revert </button>
                 </div>
 
 
@@ -245,7 +265,7 @@ export default class Dice extends React.Component {
                             ...Styles.Heading, width: '90%', marginTop: '7%', alignSelf: 'flex-start',
                             justifyContent: 'flex-start'
                         }}
-                        >  {this.state.Class ? this.state.Class : 'Level Restrict' }  </div>
+                        >  {this.state.Class ? this.state.Class : 'Level Restrict'}  </div>
 
 
                         <LevelRestrict
@@ -352,7 +372,8 @@ export default class Dice extends React.Component {
                     Left={Mobi() ? 2 : 33.5}
                     Width={Mobi() ? 90 : 21.5}
                     Height={18}
-                    Items={this.state.SeeAlsos}
+                    Items={this.state.SeeAlsos} 
+                    Slice={this.Slice}
                 />
 
             </div>

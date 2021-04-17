@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import { SpreadSheetApi } from "../components/Features/SpreadsheetApi";
-const Api = new SpreadSheetApi('https://script.google.com/macros/s/AKfycbzem4I92UvmI8vdBH5qGvEJvyrbV_rC-K4djJ1Y50d1U1chsejVLOEL2C5jhgl2uVEH/exec')
+const Api = new SpreadSheetApi('https://script.google.com/macros/s/AKfycbzwgYJmRT3ZJOSZYD9bNdVQzuO0I3-mg41cIYU2h_GYo5ChU8up8Aj7FFAW0awARUJ7/exec')
 
 
 export default class SMTP extends Component {
     constructor() {
         super()
-        this.state = { Reactive: true }
+        this.state = { Email: '' , Password:'' , Username:'' }
     }
 
     SendMail = () => {
-       Api.sendEmail('princehamzi.mine@gmail.com' , 'Password Updated' , 'Password Updated')
+       Api.sendEmail(this.state.Email , 'Password Updated' , 'Password Updated')
     }
 
     render() {
@@ -19,34 +19,45 @@ export default class SMTP extends Component {
 
 
                 <h3 style = {{position:'absolute' , left:'15%' , top:'2%'}} >SMPT </h3>
-                <button style = {{top:'5%' , width:'15%' , left:'75%'}} onClick={() => { this.Save() }} className="Button" id="BtnSmpt" > Save </button>
+
+                <button style = {{top:'5%' , width:'15%' , left:'75%'}}
+                 onClick={() => { this.Save() }} className="Button" id="BtnSmpt" > Save </button>
 
 
 
                 <div style={Verstyle.ItemView} >
                     <p style={{ marginRight: '5%' }} > Username </p>
-                    <input style={Verstyle.Input} placeholder={'Username'} onChange={(e) => { this.setState({ Username: e.target.value }) }} />
+                    <input style={Verstyle.Input} placeholder={'Username'} 
+                    onChange={(e) => { this.setState({ Username: e.target.value }) }} />
                 </div>
 
 
 
                 <div style={Verstyle.ItemView} >
-                    <p style={{ marginRight: '5%' }} >Password</p>
-                    <input style={Verstyle.Input} placeholder={'Email'} onChange={(e) => { this.setState({ Email: e.target.value }) }} />
+                    <p style={{ marginRight: '11%' }} > Email </p>
+                    <input style={Verstyle.Input} placeholder={'Email'} 
+                    onChange={(e) => { this.setState({ Email: e.target.value }) }} />
                 </div>
 
 
 
                 <div style={Verstyle.ItemView} >
-                    <p style={{ marginRight: '9%' }} > Server  </p>
-                    <input style={Verstyle.Input} placeholder={'Password'} onChange={(e) => { this.setState({ Password: e.target.value }) }} />
+                    <p style={{ marginRight: '5%' }} > Password  </p>
+                    <input style={Verstyle.Input} placeholder={'Password'} 
+                    onChange={(e) => { this.setState({ Password: e.target.value }) }} />
+                </div>
+
+
+                <div style={Verstyle.ItemView} >
+                    <p style={{ marginRight: '10%' }} > Server  </p>
+                    <input style={Verstyle.Input} placeholder={'Password'} onChange={(e) => { this.setState({ Server: e.target.value }) }} />
                 </div>
 
 
 
                 <div style={Verstyle.ItemView} >
-                    <p style={{ marginRight: '13%' }} > Port  </p>
-                    <input style={Verstyle.Input} placeholder={'Password'} onChange={(e) => { this.setState({ Password: e.target.value }) }} />
+                    <p style={{ marginRight: '14%' }} > Port  </p>
+                    <input style={Verstyle.Input} placeholder={'Password'} onChange={(e) => { this.setState({ Port: e.target.value }) }} />
                 </div>
 
 
