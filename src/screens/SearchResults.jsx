@@ -6,16 +6,13 @@ export default class SearchResults extends React.Component {
     Insert = (Info, Word) => {
         //  alert(JSON.stringify(Item))
         // let x = this.props.addToOptions ? this.props.addToOptions : this.props.Alert;
-        // alert(JSON.stringify(Info))
+        //  alert(JSON.stringify(Info))
 
-        this.props.addToOptions(Info, Word)
+     this.props.addToOptions(Info, Word)
 
-        //    if (this.props.addToOptions) {
-        //        this.props.addToOptions(Item)
-        //    } else if (this.props.Alert) this.props.Alert(Item)
-
+      
         // this.props.Alert(Item)
-        // ((fn:addToOptions)(Item)) : ((fn:Alert)(Item))
+        // ((fn:addToOptions(Item))) : ((fn:Alert(Item)))
 
         // {{JSN|item,index| ((item.child))   }}
 

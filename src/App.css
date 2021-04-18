@@ -18,7 +18,7 @@
   position: absolute;
   top: 6%;
   left: 18%;
-  font: 24px arial
+  font: 10px arial
 }
 .Button {
   position: absolute;
@@ -110,8 +110,9 @@
 
   .Title {
     position: absolute;
-    top:3%;
-    left:8%;
+    top: 5%;
+    left: 2%;
+    font: 10px arial
   }
 
   .Button {

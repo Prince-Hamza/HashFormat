@@ -46,14 +46,17 @@ export default class Dice extends React.Component {
         Info.forEach((Obj) => {
             let Item = Obj.val()
             if (!Array.isArray(Item.KeyWords)) Item.KeyWords = [Item.KeyWords]
+            
             Item.KeyWords.forEach((Word) => {
-                if (!Word.includes('3') && !Word.includes('8')){
-                    let neobj = {
-                        KeyWord: Word,
-                        Info: Item
+                    if (Word !== undefined && !Word.includes('3') && !Word.includes('8') &&
+                     !Word.includes('\n') && !Word.includes('undefined') && !Word.includes('<') 
+                     && !Word.includes('>')  && !Word.includes(`"`) ) {
+                        let neobj = {
+                            KeyWord: Word,
+                            Info: Item
+                        }
+                        this.KeyWordsArray.push(neobj)
                     }
-                this.KeyWordsArray.push(neobj)
-                }
             })
             // this.Data.push(JSN)
         })
@@ -124,7 +127,7 @@ export default class Dice extends React.Component {
         this.setState({
             EntryName: Word,
             currentObject: Info,
-            Options: [`cast 'ego whip' <target>`],
+            Options: Info.Syntax,
             KeyWords: Info.KeyWords,
             SeeAlsos: Info.SeeAlso,
             Class: Info.Class,
@@ -234,8 +237,12 @@ export default class Dice extends React.Component {
             <div style={Styles.Main}>
 
                 <div className="mobiHeader">
+
                     <div className="Title" style={Styles.Title} >  {this.state.EntryName}  </div>
-                    <button onClick={() => { alert("Pending for Approval"); this.Save() }} className="Button" id="Btn1" > Save </button>
+
+                    <button onClick={() => { alert("Pending for Approval"); this.Save() }}
+                        className="Button" id="Btn1" > Save </button>
+
                     <button className="Button" id="Btn2" style={{ ...Styles.Button }} onClick={() => {
                         this.Revert()
                     }}> Revert </button>
@@ -245,7 +252,8 @@ export default class Dice extends React.Component {
 
 
 
-                <div>
+                <div style={{ backgroundColor: 'white' }} >
+
                     <div style={Styles.textAreaContainer} >
 
                         <Select options={this.state.Menu} className={this.Mobi() ? "mobiSelect" : "Select"} />
@@ -262,8 +270,9 @@ export default class Dice extends React.Component {
                     <div style={{ ...Styles.textAreaContainer, left: Mobi() ? '0%' : '34%', top: Mobi() ? '145%' : '13%' }} >
 
                         <div style={{
-                            ...Styles.Heading, width: '90%', marginTop: '7%', alignSelf: 'flex-start',
-                            justifyContent: 'flex-start'
+                            ...Styles.Heading, width: Mobi() ? '86%' : '90%', marginTop: '7%',
+                            alignSelf: Mobi() ? 'center' : 'flex-start',
+                            justifyContent: 'flex-start', color: 'lightgray'
                         }}
                         >  {this.state.Class ? this.state.Class : 'Level Restrict'}  </div>
 
@@ -295,8 +304,8 @@ export default class Dice extends React.Component {
 
                     <Container
                         Top={this.Mobi() ? 120 : 30}
-                        Left={this.Mobi() ? 3 : 10}
-                        Width={this.Mobi() ? 90 : 21.5}
+                        Left={this.Mobi() ? 5 : 10}
+                        Width={this.Mobi() ? 89 : 21.5}
                         Height={18}
                         Items={this.state.KeyWords} Slice={this.Slice}
                         ArrayName={'KeyWords'}
@@ -307,8 +316,8 @@ export default class Dice extends React.Component {
 
                     <Container
                         Top={this.Mobi() ? 165 : 30}
-                        Left={this.Mobi() ? 3 : 34}
-                        Width={this.Mobi() ? 90 : 21.5}
+                        Left={this.Mobi() ? 5 : 34}
+                        Width={this.Mobi() ? 89 : 21.5}
                         Height={18}
                         Items={this.state.Options} Slice={this.Slice}
                         ArrayName={'Options'}
@@ -360,8 +369,8 @@ export default class Dice extends React.Component {
                     style={{
                         ...Styles.plusImage,
                         position: 'absolute',
-                        left: Mobi() ? '89%' : '53.5%',
-                        top: Mobi() ? '219.5%' : '52%'
+                        left: Mobi() ? '89.5%' : '53.5%',
+                        top: Mobi() ? '219.2%' : '52%',
                     }}
                     alt="void" width="25px" height="25px"
                     src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
@@ -369,12 +378,15 @@ export default class Dice extends React.Component {
 
                 <Container id="SASearch"
                     Top={Mobi() ? 230 : 61.5}
-                    Left={Mobi() ? 2 : 33.5}
+                    Left={Mobi() ? 4 : 33.5}
                     Width={Mobi() ? 90 : 21.5}
                     Height={18}
-                    Items={this.state.SeeAlsos} 
+                    Items={this.state.SeeAlsos}
                     Slice={this.Slice}
                 />
+
+                <div style={Styles.White} />
+
 
             </div>
         );
@@ -403,9 +415,20 @@ let Styles = ({
         alignItems: 'center', /* Vertical */
         justifyContent: 'center', /* Horizontal */
         backgroundColor: "white",
-        zIndex: 0
+        zIndex: 1
     },
 
+    White: {
+        position: 'absolute',
+        top: '100%',
+        left: '0%',
+        width: '100%',
+        height: '160%',
+        backgroundColor: 'white',
+        zIndex: -1,
+        border: '5px dotted white'
+
+    },
 
     Overlayer: {
         position: 'absolute',
@@ -446,7 +469,7 @@ let Styles = ({
         position: 'absolute',
         top: Mobi() ? '190%' : '55%',
         left: Mobi() ? '4%' : '10%',
-        width: Mobi() ? '90%' : '21.5%',
+        width: Mobi() ? '89%' : '21.5%',
         height: '24%',
         font: 'italic 16px times new roman',
         display: 'flex',

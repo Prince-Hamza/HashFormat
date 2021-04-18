@@ -78,7 +78,7 @@ export default class API extends Component {
                     </div>
 
                     <div style={{ ...Verstyle.ItemView, flexDirection: 'row' }} >
-                        <input value = 'localhost:3000/update' />
+                        <input value = 'abc-best-services.firebaseapp.com/update' />
                         <button style={Verstyle.Button} onClick={() => { this.Download() }} > Download </button>
                     </div>
 

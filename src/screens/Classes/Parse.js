@@ -11,12 +11,26 @@ export class Parse {
     //     return Info
     // }
 
+    ProtoTypes = () => {
+        Object.prototype.Stringify = () => {
+            return JSON.stringify(this)
+        }
+        Object.prototype.log = () => {
+            return console.log(this)
+        }
+        String.prototype.log = () => {
+            return console.log(this)
+        }
+
+
+    }
+
     getInfo = (n) => {
         let Items = this.readItems()
         // let Jsn = this.getJSON(Items[n])
         // return Jsn.KeyWords
 
-       // this.getClass(Items[n])
+        // this.getClass(Items[n])
         // return k
     }
 
@@ -26,9 +40,9 @@ export class Parse {
         var Total = []
         let Items = this.readItems()
         Items.forEach((Item) => {
-             let JSN = this.getJSON(Item)
-             Total.push(JSN)
-            //this.getKeyWords(Item)
+              let JSN = this.getJSON(Item)
+              Total.push(JSN)
+           // this.getKeyWords(Item)
         })
         return Total
     }
@@ -63,20 +77,23 @@ export class Parse {
 
         if (!Line.includes('~')) {
 
-            if (Line.includes(' ')) { return Line.split(' ') } else return [Line]
+            return this.Parse_KeyWords(Line)
+
 
         } else if (Line.includes(`~`)) {
+            // parse Single & Multiple keywords
 
             let Keys = Line.split(`~`)[1]
             let Class = Line.split('~')[0]
 
-            if (Keys.substring(0, 1) == ' ') Keys = Keys.substring(1, Keys.length - 1)
-            
-            if (Keys.substring(0, 1) == `'`) Keys = Keys.substring(1, Keys.length);
-            
-            // if (Keys.includes('DUP')) alert(Keys)
 
-            return Keys
+          //  alert(Keys)
+            return this.Parse_KeyWords(Keys)
+
+            //  if (k[0].includes('MAR')) alert(k)
+
+
+
 
         }
 
@@ -84,6 +101,131 @@ export class Parse {
 
     }
 
+    Parse_KeyWords = (KeyLine) => {
+
+
+        if (KeyLine == '' || KeyLine == ' ' || KeyLine == '\n') return 'undefined'
+
+        // if (KeyLine.includes(`WEAPON SEIZE`)) alert(KeyLine)
+
+       
+         if (KeyLine.substring(0,1) == ' ') KeyLine = KeyLine.replace(' ' , '')
+        //  if (KeyLine.substring(0,1) == ' ') alert(KeyLine)
+
+        if (KeyLine.substring(0, 1) == `'`) {
+
+            // if (KeyLine.includes(`WEAPON SEIZE`)) alert(KeyLine)
+
+            if (KeyLine.includes(`' `)) { KeyLine = KeyLine.split(`' `) } else { KeyLine = [KeyLine] }
+
+            // two times for initial & last comma
+            KeyLine = KeyLine.map((item) => item.includes(`'`) ? item.replace(`'`, '') : item)
+            KeyLine = KeyLine.map((item) => item.includes(`'`) ? item.replace(`'`, '') : item)
+            KeyLine = KeyLine.map((item) => item.includes(`,`) ? item.replace(`,`, '') : item)
+            KeyLine = KeyLine.map((item) => item.substring(0,1) === ' ' ? item.replace(' ', '') : item)
+            KeyLine = KeyLine.filter((item) => item !== '')
+            KeyLine = KeyLine.filter((item) => item !== ' ')
+
+
+            // clean up & return: KeyLine = CleanUp(KeyLine)
+            return KeyLine
+        }
+
+
+        if (KeyLine.substring(0, 1) !== `'`) {
+
+            // GET ALL INDEX of commas
+
+            let Indexes = [], ValuesInInverts = []
+            try { Indexes = [...KeyLine.matchAll(new RegExp(`'`, 'gi'))].map(a => a.index); } catch (ex) { }
+
+
+            // extract & trim inverted values
+
+            if (KeyLine.includes(`'`)) {
+
+                for (let n = 0; Indexes[n] != undefined; n++) {
+                    if (!n % 2 == 0) {
+                        let str = KeyLine.substring(Indexes[n], Indexes[n - 1])
+                        ValuesInInverts.push(str)
+                    }
+                }
+
+                // extract remaining values | struck off inverted values
+
+                ValuesInInverts.forEach((val) => {
+                    KeyLine = KeyLine.replace(val, '')
+                })
+
+
+
+                KeyLine = KeyLine.replace(`'`, '')
+                KeyLine = KeyLine.replace(`,`, '')
+                KeyLine = KeyLine.split(' ')
+
+
+                // cleanup
+
+                this.CleanUp(KeyLine)
+                this.CleanUp(ValuesInInverts)
+
+
+
+                ValuesInInverts = ValuesInInverts.map((item) => item.substring(0, 1) == `'` ? item.replace(`'`, '') : item)
+                ValuesInInverts = ValuesInInverts.filter((item) => item !== ' ')
+
+
+
+                KeyLine = KeyLine.concat(ValuesInInverts)
+
+                // if (KeyLine.includes('BIO')) alert(KeyLine)
+
+
+                return KeyLine
+
+
+
+                // if key includes ' 
+
+            } else {
+
+
+
+                KeyLine = KeyLine.includes(' ') ? KeyLine.split(' ') : [KeyLine];
+
+                return KeyLine
+
+                // if (KeyLine[0].includes('UND')) alert(KeyLine[0])
+
+            }
+
+
+
+
+        }
+
+
+
+
+        // alert(KeyLine)
+        //  return KeyLine
+
+
+
+    }
+
+    valClean = () => {
+
+    }
+
+    CleanUp = (array) => {
+        array.forEach((item, index) => {
+            if (item.includes(',')) item.replace(',', '')
+            if (item.includes(`'`)) item.replace(`'`, '')
+            if (item.includes(' ')) item.replace(' ', '')
+            if (item == '') array.splice(index, index + 1)
+        })
+    }
 
     getClass = (item) => {
 
@@ -237,47 +379,3 @@ export class Parse {
 
 
 
-    // readSyntaxBySpaces = (item) => {
-    //     alert("spc")
-    //     let StrCount, Syntaxes = [], Particles = []
-    //     Particles = item.split(" ")
-    //     for (let i = 0; i <= Particles.length - 1; i++) {
-    //         StrCount += Particles[i].length
-    //         if (Particles[i].includes('Syntax:')) {
-    //             this.DescStartIndex = StrCount
-    //             let SyntaxnValue = Particles[i + 1]
-    //             let target = SyntaxnValue.substr(0, SyntaxnValue.length - 8)
-    //             Syntaxes.push(target)
-    //         }
-    //     }
-    //     return Syntaxes
-    // }
-
-
-
-    // getSyntaxValue = (item, SxValStart) => {
-    //     let Syx = []
-
-    //     SxValStart.forEach((index) => {
-    //         console.log(index)
-    //         // get Syntax Value : next word
-    //         //  let Stop = item.indexOf(' ', index + 1)                     
-    //         //  let Word = item.slice(index + 1, Stop)
-    //         //  Word = Word.includes('\n') ? Word.split('\n')[0] : Word
-    //         //  alert(Word)
-
-    //         let prt = item.split('\n')
-    //         alert(prt[8])
-
-    //         // check if has tags ? push ? 
-
-    //         // check if has next tags ? push ?
-
-    //         // has No Tags ? Push Word Only
-
-
-    //         // Syx.push(resp)
-    //     })
-
-    //     return Syx
-    // }

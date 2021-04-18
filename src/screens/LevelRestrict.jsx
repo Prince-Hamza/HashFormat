@@ -13,8 +13,8 @@ export default class LevelRestrict extends Component {
             <div style={Styles.Row} >
 
                 <input style={{
-                    ...Styles.Heading, width: Mobi() ? '75%' : '100%',
-                    marginTop: '7%', marginRight: "5%",
+                    ...Styles.Heading, width: Mobi() ? '80%' : '100%',
+                    marginTop: '7%', marginRight: "1.5%",
 
                 }}
                     placeholder='New Syntax'

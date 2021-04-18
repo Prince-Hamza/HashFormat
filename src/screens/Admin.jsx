@@ -86,7 +86,7 @@ const Verstyle = {
         top: '0%',
         left: Mobile() ? '3%' : '0%',
         width: Mobile() ? '100%' : '20%',
-        height: '25px',
+        height: '4%',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'flex-start', /* Vertical */
@@ -105,7 +105,7 @@ const Verstyle = {
     BlueLine: {
         position: 'absolute',
         left: '0%',
-        top: '4%',
+        top: '4.1%',
         width: '100%',
         height: '0.6%',
         backgroundColor: 'blueviolet'

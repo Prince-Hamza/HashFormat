@@ -20,9 +20,9 @@ export default class Container extends React.Component {
 
     componentDidMount = () => {
 
-        // this.scheme()
-       // let i = Parser.getInfoAll()
-        // alert((i))
+        //this.scheme()
+        //let i = Parser.getInfoAll()
+        //alert((i.length))
 
 
 

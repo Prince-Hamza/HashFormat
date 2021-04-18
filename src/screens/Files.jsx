@@ -41,7 +41,7 @@ export default class Dice extends React.Component {
     componentDidMount = async () => {
         //  let info = Parser.readTextFile()
 
-        let Info = await Fire.Once('Pending')
+        let Info = await Fire.Once('/Pending')
 
         Info.forEach((Obj) => {
             let Item = Obj.val()
@@ -52,12 +52,12 @@ export default class Dice extends React.Component {
                     Info: Item
                 }
                 this.KeyWordsArray.push(neobj)
+                // alert( JSON.stringify(neobj))
             })
             // this.Data.push(JSN)
         })
 
         // alert( JSON.stringify(this.KeyWordsArray[3]))
-
 
         this.setState({ Info: this.KeyWordsArray })
         Info = []
@@ -109,7 +109,7 @@ export default class Dice extends React.Component {
 
 
 
-    InsertOption = (Obj , Word) => {
+    InsertOption = (Obj, Word) => {
         this.setState({
             EntryName: Word,
             currentObject: Obj,
@@ -118,6 +118,7 @@ export default class Dice extends React.Component {
             SeeAlsos: Obj.SeeAlso,
             Class: Obj.Class
         })
+
     }
 
     Alert = (Item) => {
@@ -125,7 +126,8 @@ export default class Dice extends React.Component {
     }
 
     Save = () => {
-        Fire.Set(`Pending/${this.state.currentObject.Id}`, this.state.currentObject)
+        alert( JSON.stringify(this.state.currentObject))
+        Fire.Set(`HashFormat/Entries/${this.state.currentObject.Id}`, this.state.currentObject)
     }
 
     AddSyntax = (paramList) => {
@@ -143,7 +145,7 @@ export default class Dice extends React.Component {
             // alert(JSON.stringify(this.state.currentObject))
             this.setState({ currentObject: this.state.currentObject })
             this.setState({ Syntax: paramList })
-            alert(this.state.newSyntax)
+            // alert(this.state.newSyntax)
         }
         // alert(JSON.stringify(paramList))
 
@@ -193,7 +195,7 @@ export default class Dice extends React.Component {
     }
 
     SetSyntaxValue = (value) => {
-        alert(value)
+        // alert(value)
         this.setState({ newSyntax: value })
     }
 
@@ -244,8 +246,8 @@ export default class Dice extends React.Component {
                     <div style={{ ...Styles.textAreaContainer, left: Mobi() ? '0%' : '34%', top: Mobi() ? '145%' : '13%' }} >
 
                         <div style={{
-                            ...Styles.Heading, width: '90%', marginTop: '7%', alignSelf: 'flex-start',
-                            justifyContent: 'flex-start'
+                            ...Styles.Heading, width: Mobi() ? '86%' : '90%', marginTop: '7%', alignSelf: 'center',
+                            justifyContent: 'flex-start', color: 'gray'
                         }}
                         > {this.state.Class !== 'undefined' ? this.state.Class : 'Level Restrictions'} </div>
 
@@ -277,8 +279,8 @@ export default class Dice extends React.Component {
 
                     <Container
                         Top={this.Mobi() ? 120 : 30}
-                        Left={this.Mobi() ? 3 : 10}
-                        Width={this.Mobi() ? 90 : 21.5}
+                        Left={this.Mobi() ? 5 : 10}
+                        Width={this.Mobi() ? 89 : 21.5}
                         Height={18}
                         Items={this.state.KeyWords} Slice={this.Slice}
                         ArrayName={'KeyWords'}
@@ -289,10 +291,10 @@ export default class Dice extends React.Component {
 
                     <Container
                         Top={this.Mobi() ? 165 : 30}
-                        Left={this.Mobi() ? 3 : 34}
-                        Width={this.Mobi() ? 90 : 21.5}
+                        Left={this.Mobi() ? 5 : 34}
+                        Width={this.Mobi() ? 89 : 21.5}
                         Height={18}
-                        Items={this.state.Syntax} Slice={this.Slice}
+                        Items={this.state.Options} Slice={this.Slice}
                         ArrayName={'Options'}
                     />
 
@@ -327,10 +329,10 @@ export default class Dice extends React.Component {
                 <input style={{
                     ...Styles.Heading,
                     position: 'absolute',
-                    width: Mobi() ? '80%' : '18%',
+                    width: Mobi() ? '81%' : '18%',
                     top: Mobi() ? '220%' : "55%",
                     left: Mobi() ? '0%' : '31.5%',
-                    marginLeft: '2%'
+                    marginLeft: '4%'
                 }}
                     onChange={(e) => { this.setState({ newSA: e.target.value }) }}
                     placeholder={"Search"} />
@@ -342,8 +344,8 @@ export default class Dice extends React.Component {
                     style={{
                         ...Styles.plusImage,
                         position: 'absolute',
-                        left: Mobi() ? '89%' : '53.5%',
-                        top: Mobi() ? '219.5%' : '52%'
+                        left: Mobi() ? '89.5%' : '53.5%',
+                        top: Mobi() ? '219.2%' : '52%'
                     }}
                     alt="void" width="25px" height="25px"
                     src="https://uc-emoji.azureedge.net/orig/ef/44c1af69ec5f274e1bc6f28367a410.png" />
@@ -351,11 +353,15 @@ export default class Dice extends React.Component {
 
                 <Container id="SASearch"
                     Top={Mobi() ? 230 : 61.5}
-                    Left={Mobi() ? 2 : 33.5}
+                    Left={Mobi() ? 4 : 33.5}
                     Width={Mobi() ? 90 : 21.5}
                     Height={18}
                     Items={this.state.SeeAlsos}
                 />
+
+
+                <div style={Styles.White} />
+
 
             </div>
         );
@@ -384,7 +390,19 @@ let Styles = ({
         alignItems: 'center', /* Vertical */
         justifyContent: 'center', /* Horizontal */
         backgroundColor: "white",
-        zIndex: 0
+        zIndex: 1
+    },
+
+    White: {
+        position: 'absolute',
+        top:'100%',
+        left:'0%',
+        width: '100%',
+        height: '160%',
+        backgroundColor: 'white',
+        zIndex:-1,
+        border:'5px dotted white'
+
     },
 
 
@@ -425,9 +443,9 @@ let Styles = ({
     },
     DescriptionBox: {
         position: 'absolute',
-        top: Mobi() ? '190%' : '55%',
+        top: Mobi() ? '192%' : '55%',
         left: Mobi() ? '4%' : '10%',
-        width: Mobi() ? '90%' : '21.5%',
+        width: Mobi() ? '89%' : '21.5%',
         height: '24%',
         font: 'italic 16px times new roman',
         display: 'flex',
